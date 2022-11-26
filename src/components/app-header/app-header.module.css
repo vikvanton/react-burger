@@ -1,0 +1,26 @@
+.header {
+    background: var(--background);
+    display: flex;
+    justify-content: center;
+}
+
+.list {
+    display: flex;
+    list-style-type: none;
+    margin: 0;
+    padding-left: 0;
+    width: 1280px;
+    height: 88px;
+}
+
+.logo {
+    margin: 19px 288.85px 19px 112px;
+}
+
+.item {
+    display: flex;
+}
+
+.item:hover {
+    cursor: pointer;
+}

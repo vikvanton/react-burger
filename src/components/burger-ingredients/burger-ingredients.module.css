@@ -11,13 +11,3 @@
     overflow-x: hidden;
     max-height: calc(100vh - 298px);
 }
-
-.grid {
-    display: grid;
-    grid-template-columns: repeat(2, auto);
-    column-gap: 24px;
-    row-gap: 32px;
-    list-style-type: none;
-    margin-top: 0;
-    padding-left: 0;
-}

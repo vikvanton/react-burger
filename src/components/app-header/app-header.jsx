@@ -12,32 +12,38 @@ function AppHeader() {
         <header className={styles.header}>
             <nav>
                 <ul className={styles.list}>
-                    <li
-                        className={`${styles.item} text text_type_main-default mt-4 mb-4 mr-2 pt-4 pb-4 pl-5 pr-5`}
-                    >
-                        <span className="mr-2">
+                    <li className="mt-4 mb-4 mr-2 pt-4 pb-4 pl-5 pr-5">
+                        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                        <a
+                            href="#"
+                            className={`${styles.link} ${styles.linkSelected} text text_type_main-default`}
+                        >
                             <BurgerIcon type="primary" />
-                        </span>
-                        <span>Конструктор</span>
+                            Конструктор
+                        </a>
                     </li>
-                    <li
-                        className={`${styles.item} text text_type_main-default mt-4 mb-4 pt-4 pb-4 pl-5 pr-5 text_color_inactive`}
-                    >
-                        <span className="mr-2">
+                    <li className="mt-4 mb-4 pt-4 pb-4 pl-5 pr-5">
+                        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                        <a
+                            href="#"
+                            className={`${styles.link} text text_type_main-default text_color_inactive`}
+                        >
                             <ListIcon type="secondary" />
-                        </span>
-                        <span>Лента заказов</span>
+                            Лента заказов
+                        </a>
                     </li>
                     <li className={styles.logo}>
                         <Logo />
                     </li>
-                    <li
-                        className={`${styles.item} text text_type_main-default mt-4 mb-4 pt-4 pb-4 pl-5 pr-5 text_color_inactive`}
-                    >
-                        <span className="mr-2">
+                    <li className="mt-4 mb-4 pt-4 pb-4 pl-5 pr-5">
+                        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                        <a
+                            href="#"
+                            className={`${styles.link} text text_type_main-default text_color_inactive`}
+                        >
                             <ProfileIcon type="secondary" />
-                        </span>
-                        <span>Личный кабинет</span>
+                            Личный кабинет
+                        </a>
                     </li>
                 </ul>
             </nav>

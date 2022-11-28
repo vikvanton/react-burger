@@ -17,10 +17,12 @@
     margin: 19px 288.85px 19px 112px;
 }
 
-.item {
+.link {
+    text-decoration: none;
     display: flex;
+    gap: 8px;
 }
 
-.item:hover {
-    cursor: pointer;
+.linkSelected {
+    color: var(--text-primary-color);
 }

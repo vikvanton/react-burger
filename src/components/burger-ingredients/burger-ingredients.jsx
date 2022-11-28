@@ -13,6 +13,9 @@ function BurgerIngredients({ ingredients }) {
         sauce: [],
     });
     const [loading, setLoading] = React.useState(true);
+    const bunRef = React.useRef();
+    const sauceRef = React.useRef();
+    const mainRef = React.useRef();
 
     React.useEffect(() => {
         const bun = [];
@@ -52,7 +55,25 @@ function BurgerIngredients({ ingredients }) {
             sauce,
         });
         setLoading(false);
-    }, []);
+    }, [ingredients]);
+
+    const onTabClick = (value) => {
+        let ref;
+        switch (value) {
+            case "bun":
+                ref = bunRef;
+                break;
+            case "sauce":
+                ref = sauceRef;
+                break;
+            case "main":
+                ref = mainRef;
+                break;
+            default:
+        }
+        ref.current.scrollIntoView({ behavior: "smooth" });
+        setCurrent(value);
+    };
 
     return (
         <>
@@ -65,21 +86,21 @@ function BurgerIngredients({ ingredients }) {
                         <Tab
                             value="bun"
                             active={current === "bun"}
-                            onClick={setCurrent}
+                            onClick={onTabClick}
                         >
                             Булки
                         </Tab>
                         <Tab
                             value="sauce"
                             active={current === "sauce"}
-                            onClick={setCurrent}
+                            onClick={onTabClick}
                         >
                             Соусы
                         </Tab>
                         <Tab
                             value="main"
                             active={current === "main"}
-                            onClick={setCurrent}
+                            onClick={onTabClick}
                         >
                             Начинки
                         </Tab>
@@ -89,15 +110,18 @@ function BurgerIngredients({ ingredients }) {
                             ingredients={categories.bun}
                             name="Булки"
                             extraClass="mb-10"
+                            ref={bunRef}
                         />
                         <BurgerIngredientsCategory
                             ingredients={categories.sauce}
                             name="Соусы"
                             extraClass="mb-10"
+                            ref={sauceRef}
                         />
                         <BurgerIngredientsCategory
                             ingredients={categories.main}
                             name="Начинки"
+                            ref={mainRef}
                         />
                     </div>
                 </section>

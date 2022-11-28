@@ -19,7 +19,7 @@ function BurgerConstructor({ ingredients }) {
     React.useEffect(() => {
         setUsedIngredients({
             bun: ingredients[0],
-            list: [...[1, 2, 3, 4, 5, 7, 10].map((item) => ingredients[item])],
+            list: [1, 2, 3, 4, 5, 7, 10].map((item) => ingredients[item]),
         });
         setLoading(false);
     }, [ingredients]);

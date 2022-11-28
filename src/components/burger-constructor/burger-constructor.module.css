@@ -1,0 +1,54 @@
+.section {
+    width: 600px;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    list-style-type: none;
+    margin: 0;
+    padding-left: 0;
+}
+
+.element {
+    background: var(--background);
+}
+
+.container {
+    min-width: 588px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: calc(100vh - 498px);
+}
+
+.bun {
+    margin-left: 32px;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+}
+
+.item > svg {
+    margin-right: 8px;
+}
+
+.summary {
+    display: flex;
+    justify-content: end;
+}
+
+.text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.text > svg {
+    width: 33px;
+    height: 33px;
+}
+

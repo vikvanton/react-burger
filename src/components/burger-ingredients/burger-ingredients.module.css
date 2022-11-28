@@ -1,0 +1,13 @@
+.section {
+    width: 600px;
+}
+
+.tabs {
+    display: flex;
+}
+
+.container {
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: calc(100vh - 298px);
+}

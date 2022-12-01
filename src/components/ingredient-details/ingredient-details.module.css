@@ -1,0 +1,34 @@
+.details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 520px;
+}
+
+.name {
+    text-align: center;
+}
+
+.list {
+    display: flex;
+    list-style-type: none;
+    gap: 20px;
+    margin: 0;
+    padding-left: 0;
+    width: 100%;
+}
+
+.item {
+    width: 112px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px
+}
+
+.item:first-child {
+    width: 126px;
+}
+
+.item > span {
+    text-align: center;
+}

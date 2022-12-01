@@ -1,10 +1,10 @@
-import React from "react";
+import { forwardRef } from "react";
 import PropTypes from "prop-types";
 import styles from "./burger-ingredients-category.module.css";
 import BurgerIngredientsItem from "../burger-ingredients-item/burger-ingredients-item";
 import { categorizedIngredientShape } from "../../utils/data-prop-types";
 
-const BurgerIngredientsCategoryRef = React.forwardRef(
+const BurgerIngredientsCategoryRef = forwardRef(
     function BurgerIngredientsCategory({ ingredients, name, extraClass }, ref) {
         return (
             <article ref={ref} className={extraClass || null}>

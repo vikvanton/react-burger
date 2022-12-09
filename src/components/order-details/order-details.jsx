@@ -1,13 +1,14 @@
 import styles from "./order-details.module.css";
 import doneImgPath from "../../images/done.png";
+import PropTypes from "prop-types";
 
-function OrderDetails() {
+function OrderDetails({ orderNumber }) {
     return (
         <article className={`${styles.order} mt-4 mb-30 ml-25 mr-25`}>
             <span
                 className={`${styles.number} text text_type_digits-large mb-8`}
             >
-                034536
+                {orderNumber}
             </span>
             <span className="text text_type_main-medium mb-15">
                 идентификатор заказа
@@ -26,5 +27,9 @@ function OrderDetails() {
         </article>
     );
 }
+
+OrderDetails.propTypes = {
+    orderNumber: PropTypes.number.isRequired,
+};
 
 export default OrderDetails;

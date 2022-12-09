@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { categorizedIngredientShape } from "../../utils/data-prop-types";
+import { useState, memo } from "react";
+import PropTypes from "prop-types";
+import { ingredientShape } from "../../utils/data-prop-types";
 import styles from "./burger-ingredients-item.module.css";
 import {
     CurrencyIcon,
@@ -8,8 +9,13 @@ import {
 import Modal from "../modal/modal";
 import IngredientDetails from "../ingredient-details/ingredient-details";
 
-function BurgerIngredientsItem({ ingredient }) {
+function BurgerIngredientsItem({ ingredient, addToConstructor }) {
     const [modal, setModal] = useState(false);
+
+    const onClickHandler = () => {
+        addToConstructor(ingredient);
+        openModal();
+    };
 
     const openModal = () => {
         setModal(true);
@@ -21,7 +27,7 @@ function BurgerIngredientsItem({ ingredient }) {
 
     return (
         <>
-            <li className={styles.card} onClick={openModal}>
+            <li className={styles.card} onClick={onClickHandler}>
                 {ingredient.count ? (
                     <Counter
                         count={ingredient.count}
@@ -50,7 +56,8 @@ function BurgerIngredientsItem({ ingredient }) {
 }
 
 BurgerIngredientsItem.propTypes = {
-    ingredient: categorizedIngredientShape.isRequired,
+    ingredient: ingredientShape.isRequired,
+    addToConstructor: PropTypes.func.isRequired,
 };
 
-export default BurgerIngredientsItem;
+export default memo(BurgerIngredientsItem);

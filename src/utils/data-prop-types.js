@@ -13,13 +13,9 @@ const ingredient = {
     image_mobile: PropTypes.string.isRequired,
     image_large: PropTypes.string.isRequired,
     __v: PropTypes.number.isRequired,
+    count: PropTypes.number.isRequired,
 };
 
-export const rawIngredientShape = PropTypes.shape({
+export const ingredientShape = PropTypes.shape({
     ...ingredient,
-});
-
-export const categorizedIngredientShape = PropTypes.shape({
-    ...ingredient,
-    count: PropTypes.number.isRequired,
 });

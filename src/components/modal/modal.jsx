@@ -19,20 +19,18 @@ function Modal({ children, header, onClose }) {
     }, [onClose]);
 
     return createPortal(
-        <ModalOverlay onClose={onClose}>
-            <section
-                className={styles.modal}
-                onClick={(e) => e.stopPropagation()}
-            >
+        <>
+            <section className={styles.modal}>
                 <header
                     className={`${styles.header} mt-10 ml-10 mr-10 pb-3 pt-3`}
                 >
-                    {<h1 className="text text_type_main-large">{header}</h1>}
+                    <h1 className="text text_type_main-large">{header}</h1>
                     <CloseIcon type="primary" onClick={onClose} />
                 </header>
                 {children}
             </section>
-        </ModalOverlay>,
+            <ModalOverlay onClose={onClose} />
+        </>,
         document.getElementById("modals")
     );
 }

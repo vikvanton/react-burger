@@ -11,10 +11,6 @@
     padding-left: 0;
 }
 
-.element {
-    background: var(--background);
-}
-
 .container {
     min-width: 588px;
     overflow-y: auto;

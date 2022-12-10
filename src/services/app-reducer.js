@@ -1,4 +1,11 @@
 import { v4 } from "uuid";
+import {
+    ADD_INGREDIENTS,
+    ADD_TO_CONSTRUCTOR,
+    REMOVE_FROM_CONSTRUCTOR,
+    CLEAR_CONSTRUCTOR,
+    SAVE_ORDER_NUMBER,
+} from "./app-actions";
 
 // Начальное состояние
 export const initialState = {
@@ -23,7 +30,7 @@ export const initialState = {
 export const appReducer = (state, action) => {
     switch (action.type) {
         // Добавление ингредиентов и их сортировка по категориям
-        case "ADD_INGREDIENTS": {
+        case ADD_INGREDIENTS: {
             const bun = [];
             const main = [];
             const sauce = [];
@@ -53,7 +60,7 @@ export const appReducer = (state, action) => {
             };
         }
         // Добавление в конструктор ингредиента
-        case "ADD_TO_CONSTRUCTOR": {
+        case ADD_TO_CONSTRUCTOR: {
             // Если ингредиент булка и еще нет булки в конструкторе
             if (action.data.type === "bun" && !state.constructor.bun) {
                 return {
@@ -124,7 +131,7 @@ export const appReducer = (state, action) => {
             }
         }
         // Удаление из конструктора ингредиента
-        case "REMOVE_FROM_CONSTRUCTOR": {
+        case REMOVE_FROM_CONSTRUCTOR: {
             return {
                 ...state,
                 constructor: {
@@ -145,7 +152,7 @@ export const appReducer = (state, action) => {
             };
         }
         // Очистка конструктора после отправки заказа на сервер
-        case "CLEAR_CONSTRUCTOR": {
+        case CLEAR_CONSTRUCTOR: {
             return {
                 ...state,
                 constructor: {
@@ -157,7 +164,7 @@ export const appReducer = (state, action) => {
             };
         }
         // Сохранение номера заказа
-        case "SAVE_ORDER_NUMBER": {
+        case SAVE_ORDER_NUMBER: {
             return {
                 ...state,
                 orderNumber: action.data,

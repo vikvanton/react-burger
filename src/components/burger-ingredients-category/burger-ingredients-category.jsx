@@ -1,4 +1,4 @@
-import { forwardRef, memo } from "react";
+import { forwardRef } from "react";
 import PropTypes from "prop-types";
 import styles from "./burger-ingredients-category.module.css";
 import BurgerIngredientsItem from "../burger-ingredients-item/burger-ingredients-item";
@@ -37,4 +37,4 @@ BurgerIngredientsCategoryRef.defaultProps = {
     extraClass: "",
 };
 
-export default memo(BurgerIngredientsCategoryRef);
+export default BurgerIngredientsCategoryRef;

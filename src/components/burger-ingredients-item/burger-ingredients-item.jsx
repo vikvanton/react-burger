@@ -1,4 +1,4 @@
-import { useState, memo } from "react";
+import { useState } from "react";
 import PropTypes from "prop-types";
 import { ingredientShape } from "../../utils/data-prop-types";
 import styles from "./burger-ingredients-item.module.css";
@@ -60,4 +60,4 @@ BurgerIngredientsItem.propTypes = {
     addToConstructor: PropTypes.func.isRequired,
 };
 
-export default memo(BurgerIngredientsItem);
+export default BurgerIngredientsItem;

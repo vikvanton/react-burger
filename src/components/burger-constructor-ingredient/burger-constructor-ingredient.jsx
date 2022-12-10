@@ -1,4 +1,3 @@
-import { memo } from "react";
 import styles from "./burger-constructor-ingredient.module.css";
 import PropTypes from "prop-types";
 import { ingredientShape } from "../../utils/data-prop-types";
@@ -7,14 +6,18 @@ import {
     DragIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 
-function BurgerConstructorIngredient({ item, handleDelete }) {
-    const handleClose = () => handleDelete(item);
+function BurgerConstructorIngredient({ item, handleDelete, type, isLocked }) {
+    const handleClose = handleDelete ? () => handleDelete(item) : undefined;
 
     return (
         <>
-            <DragIcon type="primary" />
+            {!isLocked && <DragIcon type="primary" />}
             <ConstructorElement
-                text={item.name}
+                type={type}
+                isLocked={isLocked}
+                text={`${item.name}${
+                    type ? (type === "top" ? " (верх)" : " (низ)") : ""
+                }`}
                 price={item.price}
                 thumbnail={item.image_mobile}
                 extraClass={styles.element}
@@ -26,7 +29,15 @@ function BurgerConstructorIngredient({ item, handleDelete }) {
 
 BurgerConstructorIngredient.propTypes = {
     item: ingredientShape.isRequired,
-    handleDelete: PropTypes.func.isRequired,
+    handleDelete: PropTypes.func,
+    type: PropTypes.oneOf(["top", "bottom"]),
+    isLocked: PropTypes.bool,
 };
 
-export default memo(BurgerConstructorIngredient);
+BurgerConstructorIngredient.defaultProps = {
+    handleDelete: undefined,
+    type: undefined,
+    isLocked: undefined,
+};
+
+export default BurgerConstructorIngredient;

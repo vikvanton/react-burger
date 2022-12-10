@@ -1,17 +1,20 @@
-import { useState, useCallback, useRef, useContext, memo } from "react";
+import { useState, useCallback, useRef, useContext } from "react";
 import styles from "./burger-ingredients.module.css";
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 import BurgerIngredientsCategory from "../burger-ingredients-category/burger-ingredients-category";
 import AppContext from "../../services/app-context";
+import { ADD_TO_CONSTRUCTOR } from "../../services/app-actions";
 
-const MemoTab = memo(Tab);
+const bunTab = "bun";
+const mainTab = "main";
+const sauceTab = "sauce";
 
 function BurgerIngredients() {
     const {
         ingredients: { bun, main, sauce },
         dispatch,
     } = useContext(AppContext);
-    const [current, setCurrent] = useState("bun");
+    const [current, setCurrent] = useState(bunTab);
     const bunRef = useRef();
     const sauceRef = useRef();
     const mainRef = useRef();
@@ -19,13 +22,13 @@ function BurgerIngredients() {
     const onTabClick = useCallback((value) => {
         let ref;
         switch (value) {
-            case "bun":
+            case bunTab:
                 ref = bunRef;
                 break;
-            case "sauce":
+            case sauceTab:
                 ref = sauceRef;
                 break;
-            case "main":
+            case mainTab:
                 ref = mainRef;
                 break;
             default:
@@ -36,7 +39,7 @@ function BurgerIngredients() {
 
     const addToConstructor = useCallback(
         (ingredient) => {
-            dispatch({ type: "ADD_TO_CONSTRUCTOR", data: ingredient });
+            dispatch({ type: ADD_TO_CONSTRUCTOR, data: ingredient });
         },
         [dispatch]
     );
@@ -47,27 +50,27 @@ function BurgerIngredients() {
                 Соберите бургер
             </h1>
             <div className={`${styles.tabs} mb-10`}>
-                <MemoTab
-                    value="bun"
-                    active={current === "bun"}
+                <Tab
+                    value={bunTab}
+                    active={current === bunTab}
                     onClick={onTabClick}
                 >
                     Булки
-                </MemoTab>
-                <MemoTab
-                    value="sauce"
-                    active={current === "sauce"}
+                </Tab>
+                <Tab
+                    value={sauceTab}
+                    active={current === sauceTab}
                     onClick={onTabClick}
                 >
                     Соусы
-                </MemoTab>
-                <MemoTab
-                    value="main"
-                    active={current === "main"}
+                </Tab>
+                <Tab
+                    value={mainTab}
+                    active={current === mainTab}
                     onClick={onTabClick}
                 >
                     Начинки
-                </MemoTab>
+                </Tab>
             </div>
             <div className={`${styles.container} custom-scroll`}>
                 <BurgerIngredientsCategory

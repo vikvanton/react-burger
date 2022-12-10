@@ -1,4 +1,3 @@
-import { memo } from "react";
 import styles from "./app-header.module.css";
 import {
     Logo,
@@ -51,4 +50,4 @@ function AppHeader() {
     );
 }
 
-export default memo(AppHeader);
+export default AppHeader;

@@ -1,4 +1,4 @@
-import { useState, useContext, useCallback, memo } from "react";
+import { useState, useContext, useCallback } from "react";
 import Modal from "../modal/modal";
 import ModalOverlay from "../modal-overlay/modal-overlay";
 import OrderDetails from "../order-details/order-details";
@@ -8,12 +8,14 @@ import { createOrder } from "../../utils/api";
 import Error from "../error/error";
 import BurgerConstructorIngredient from "../burger-constructor-ingredient/burger-constructor-ingredient";
 import {
-    ConstructorElement,
+    REMOVE_FROM_CONSTRUCTOR,
+    CLEAR_CONSTRUCTOR,
+    SAVE_ORDER_NUMBER,
+} from "../../services/app-actions";
+import {
     CurrencyIcon,
     Button,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-
-const MemoConstructorElement = memo(ConstructorElement);
 
 function BurgerConstructor() {
     const {
@@ -25,20 +27,20 @@ function BurgerConstructor() {
     // Признаки загрузки/ошибки пока оставил в компоненте
     // Во второй части перенесу в глобальное состояние
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
+    const [error, setError] = useState(undefined);
 
     const openModal = () => {
         setModal(true);
     };
 
     const closeModal = () => {
-        if (error) setError("");
+        if (error) setError(undefined);
         setModal(false);
     };
 
     const handleDeleteItem = useCallback(
         (item) => {
-            dispatch({ type: "REMOVE_FROM_CONSTRUCTOR", data: item });
+            dispatch({ type: REMOVE_FROM_CONSTRUCTOR, data: item });
         },
         [dispatch]
     );
@@ -50,7 +52,7 @@ function BurgerConstructor() {
             return;
         }
         const data = {
-            ingredients: [bun._id, ...list.map((item) => item._id)],
+            ingredients: [bun._id, ...list.map((item) => item._id), bun._id],
         };
         // Запрос к серверу пока оставил в компоненте, во второй части переделаю на thunk
         setLoading(true);
@@ -58,10 +60,10 @@ function BurgerConstructor() {
             .then((result) => {
                 if (result.success) {
                     dispatch({
-                        type: "SAVE_ORDER_NUMBER",
+                        type: SAVE_ORDER_NUMBER,
                         data: result.order.number,
                     });
-                    dispatch({ type: "CLEAR_CONSTRUCTOR" });
+                    dispatch({ type: CLEAR_CONSTRUCTOR });
                 }
             })
             .catch(() => {
@@ -79,13 +81,10 @@ function BurgerConstructor() {
                 <ul className={`${styles.list}`}>
                     {bun && (
                         <li className={`${styles.bun}`}>
-                            <MemoConstructorElement
+                            <BurgerConstructorIngredient
                                 type="top"
                                 isLocked={true}
-                                text={`${bun.name} (верх)`}
-                                price={bun.price}
-                                thumbnail={bun.image_mobile}
-                                extraClass={styles.element}
+                                item={bun}
                             />
                         </li>
                     )}
@@ -106,13 +105,10 @@ function BurgerConstructor() {
                     </ul>
                     {bun && (
                         <li className={`${styles.bun}`}>
-                            <MemoConstructorElement
+                            <BurgerConstructorIngredient
                                 type="bottom"
                                 isLocked={true}
-                                text={`${bun.name} (низ)`}
-                                price={bun.price}
-                                thumbnail={bun.image_mobile}
-                                extraClass={styles.element}
+                                item={bun}
                             />
                         </li>
                     )}

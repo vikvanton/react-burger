@@ -1,22 +1,30 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState, useReducer } from "react";
 import styles from "./app.module.css";
 import AppHeader from "../app-header/app-header";
 import BurgerIngredients from "../burger-ingredients/burger-ingredients";
 import BurgerConstructor from "../burger-constructor/burger-constructor";
-import NetworkError from "../network-error/network-error";
+import Error from "../error/error";
 import { getIngredients } from "../../utils/api";
+import AppContext from "../../services/app-context";
+import { initialState, appReducer } from "../../services/app-reducer";
+import { ADD_INGREDIENTS } from "../../services/app-actions";
 
 function App() {
     const [loading, setLoading] = useState(true);
+    // Признаки загрузки/ошибки пока оставил в компоненте
+    // Во второй части перенесу в глобальное состояние
     const [error, setError] = useState(false);
-    const [ingredients, setIngredients] = useState([]);
+    const [state, dispatch] = useReducer(appReducer, initialState);
 
     useEffect(() => {
+        // Запрос к серверу пока оставил в компоненте, во второй части переделаю на thunk
         getIngredients()
-            .then((result) => setIngredients(result.data))
+            .then((result) => {
+                dispatch({ type: ADD_INGREDIENTS, data: result.data });
+            })
             .catch(() => setError(true))
             .finally(() => setLoading(false));
-    }, []);
+    }, [dispatch]);
 
     return (
         <>
@@ -25,12 +33,14 @@ function App() {
                     <AppHeader />
                     <main className={styles.main}>
                         {error ? (
-                            <NetworkError />
+                            <Error text={"Ошибка соединения с сервером"} />
                         ) : (
-                            <div className={styles.container}>
-                                <BurgerIngredients ingredients={ingredients} />
-                                <BurgerConstructor ingredients={ingredients} />
-                            </div>
+                            <AppContext.Provider value={{ ...state, dispatch }}>
+                                <div className={styles.container}>
+                                    <BurgerIngredients />
+                                    <BurgerConstructor />
+                                </div>
+                            </AppContext.Provider>
                         )}
                     </main>
                 </>

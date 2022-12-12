@@ -1,5 +1,5 @@
 import styles from "./ingredient-details.module.css";
-import { categorizedIngredientShape } from "../../utils/data-prop-types";
+import { ingredientShape } from "../../utils/data-prop-types";
 
 function IngredientDetails({ ingredient }) {
     return (
@@ -45,7 +45,7 @@ function IngredientDetails({ ingredient }) {
 }
 
 IngredientDetails.propTypes = {
-    ingredient: categorizedIngredientShape.isRequired,
+    ingredient: ingredientShape.isRequired,
 };
 
 export default IngredientDetails;

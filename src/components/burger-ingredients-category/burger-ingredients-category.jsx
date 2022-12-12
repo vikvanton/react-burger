@@ -2,10 +2,13 @@ import { forwardRef } from "react";
 import PropTypes from "prop-types";
 import styles from "./burger-ingredients-category.module.css";
 import BurgerIngredientsItem from "../burger-ingredients-item/burger-ingredients-item";
-import { categorizedIngredientShape } from "../../utils/data-prop-types";
+import { ingredientShape } from "../../utils/data-prop-types";
 
 const BurgerIngredientsCategoryRef = forwardRef(
-    function BurgerIngredientsCategory({ ingredients, name, extraClass }, ref) {
+    function BurgerIngredientsCategory(
+        { ingredients, name, addToConstructor, extraClass },
+        ref
+    ) {
         return (
             <article ref={ref} className={extraClass || null}>
                 <h2 className="text text_type_main-medium mb-6">{name}</h2>
@@ -14,6 +17,7 @@ const BurgerIngredientsCategoryRef = forwardRef(
                         <BurgerIngredientsItem
                             key={item._id}
                             ingredient={item}
+                            addToConstructor={addToConstructor}
                         />
                     ))}
                 </ul>
@@ -23,10 +27,10 @@ const BurgerIngredientsCategoryRef = forwardRef(
 );
 
 BurgerIngredientsCategoryRef.propTypes = {
-    ingredients: PropTypes.arrayOf(categorizedIngredientShape.isRequired)
-        .isRequired,
+    ingredients: PropTypes.arrayOf(ingredientShape.isRequired).isRequired,
     name: PropTypes.string.isRequired,
-    extraClass: PropTypes.string.isRequired,
+    addToConstructor: PropTypes.func.isRequired,
+    extraClass: PropTypes.string,
 };
 
 BurgerIngredientsCategoryRef.defaultProps = {

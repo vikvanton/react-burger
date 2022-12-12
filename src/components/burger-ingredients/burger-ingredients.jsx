@@ -1,77 +1,48 @@
-import { useState, useEffect, useRef } from "react";
-import PropTypes from "prop-types";
-import { rawIngredientShape } from "../../utils/data-prop-types";
+import { useState, useCallback, useRef, useContext } from "react";
 import styles from "./burger-ingredients.module.css";
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 import BurgerIngredientsCategory from "../burger-ingredients-category/burger-ingredients-category";
+import AppContext from "../../services/app-context";
+import { ADD_TO_CONSTRUCTOR } from "../../services/app-actions";
 
-function BurgerIngredients({ ingredients }) {
-    const [current, setCurrent] = useState("bun");
-    const [categories, setCategories] = useState({
-        bun: [],
-        main: [],
-        sauce: [],
-    });
+const bunTab = "bun";
+const mainTab = "main";
+const sauceTab = "sauce";
+
+function BurgerIngredients() {
+    const {
+        ingredients: { bun, main, sauce },
+        dispatch,
+    } = useContext(AppContext);
+    const [current, setCurrent] = useState(bunTab);
     const bunRef = useRef();
     const sauceRef = useRef();
     const mainRef = useRef();
 
-    useEffect(() => {
-        const bun = [];
-        const main = [];
-        const sauce = [];
-        ingredients.forEach((item, index) => {
-            const newItem = {
-                ...item,
-                count:
-                    index === 0 ||
-                    index === 2 ||
-                    index === 3 ||
-                    index === 4 ||
-                    index === 5 ||
-                    index === 7 ||
-                    index === 10 ||
-                    index === 11
-                        ? 1
-                        : 0,
-            };
-            switch (item.type) {
-                case "bun":
-                    bun.push(newItem);
-                    break;
-                case "main":
-                    main.push(newItem);
-                    break;
-                case "sauce":
-                    sauce.push(newItem);
-                    break;
-                default:
-            }
-        });
-        setCategories({
-            bun,
-            main,
-            sauce,
-        });
-    }, [ingredients]);
-
-    const onTabClick = (value) => {
+    const onTabClick = useCallback((value) => {
         let ref;
         switch (value) {
-            case "bun":
+            case bunTab:
                 ref = bunRef;
                 break;
-            case "sauce":
+            case sauceTab:
                 ref = sauceRef;
                 break;
-            case "main":
+            case mainTab:
                 ref = mainRef;
                 break;
             default:
         }
         ref.current.scrollIntoView({ behavior: "smooth" });
         setCurrent(value);
-    };
+    }, []);
+
+    const addToConstructor = useCallback(
+        (ingredient) => {
+            dispatch({ type: ADD_TO_CONSTRUCTOR, data: ingredient });
+        },
+        [dispatch]
+    );
 
     return (
         <section className={`${styles.section} ml-5 mr-5`}>
@@ -80,22 +51,22 @@ function BurgerIngredients({ ingredients }) {
             </h1>
             <div className={`${styles.tabs} mb-10`}>
                 <Tab
-                    value="bun"
-                    active={current === "bun"}
+                    value={bunTab}
+                    active={current === bunTab}
                     onClick={onTabClick}
                 >
                     Булки
                 </Tab>
                 <Tab
-                    value="sauce"
-                    active={current === "sauce"}
+                    value={sauceTab}
+                    active={current === sauceTab}
                     onClick={onTabClick}
                 >
                     Соусы
                 </Tab>
                 <Tab
-                    value="main"
-                    active={current === "main"}
+                    value={mainTab}
+                    active={current === mainTab}
                     onClick={onTabClick}
                 >
                     Начинки
@@ -103,29 +74,28 @@ function BurgerIngredients({ ingredients }) {
             </div>
             <div className={`${styles.container} custom-scroll`}>
                 <BurgerIngredientsCategory
-                    ingredients={categories.bun}
+                    ingredients={bun}
                     name="Булки"
+                    addToConstructor={addToConstructor}
                     extraClass="mb-10"
                     ref={bunRef}
                 />
                 <BurgerIngredientsCategory
-                    ingredients={categories.sauce}
+                    ingredients={sauce}
                     name="Соусы"
+                    addToConstructor={addToConstructor}
                     extraClass="mb-10"
                     ref={sauceRef}
                 />
                 <BurgerIngredientsCategory
-                    ingredients={categories.main}
+                    ingredients={main}
                     name="Начинки"
+                    addToConstructor={addToConstructor}
                     ref={mainRef}
                 />
             </div>
         </section>
     );
 }
-
-BurgerIngredients.propTypes = {
-    ingredients: PropTypes.arrayOf(rawIngredientShape.isRequired).isRequired,
-};
 
 export default BurgerIngredients;

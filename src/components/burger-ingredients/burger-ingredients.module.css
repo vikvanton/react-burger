@@ -9,5 +9,5 @@
 .container {
     overflow-y: auto;
     overflow-x: hidden;
-    max-height: calc(100vh - 298px);
+    max-height: calc(100vh - 316px);
 }

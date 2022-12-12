@@ -7,6 +7,7 @@ import Error from "../error/error";
 import { getIngredients } from "../../utils/api";
 import AppContext from "../../services/app-context";
 import { initialState, appReducer } from "../../services/app-reducer";
+import { ADD_INGREDIENTS } from "../../services/app-actions";
 
 function App() {
     const [loading, setLoading] = useState(true);
@@ -19,7 +20,7 @@ function App() {
         // Запрос к серверу пока оставил в компоненте, во второй части переделаю на thunk
         getIngredients()
             .then((result) => {
-                dispatch({ type: "ADD_INGREDIENTS", data: result.data });
+                dispatch({ type: ADD_INGREDIENTS, data: result.data });
             })
             .catch(() => setError(true))
             .finally(() => setLoading(false));

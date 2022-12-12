@@ -34,6 +34,7 @@ function App() {
                     <main className={styles.main}>
                         {error ? (
                             <Error text={"Ошибка соединения с сервером"} />
+
                         ) : (
                             <AppContext.Provider value={{ ...state, dispatch }}>
                                 <div className={styles.container}>

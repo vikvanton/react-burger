@@ -4,12 +4,12 @@ const checkResponse = (response) => {
     return response.ok ? response.json() : Promise.reject();
 };
 
-export const getIngredients = async () => {
+export const getIngredientsRequest = async () => {
     const response = await fetch(`${NORMA_API}/ingredients`);
     return checkResponse(response);
 };
 
-export const createOrder = async (data) => {
+export const postOrderRequest = async (data) => {
     const response = await fetch(`${NORMA_API}/orders`, {
         method: "POST",
         headers: {

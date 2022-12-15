@@ -22,19 +22,9 @@
     margin-left: 32px;
 }
 
-.item {
-    display: flex;
-    align-items: center;
-    justify-content: left;
-}
-
-.item > svg {
-    margin-right: 8px;
-}
-
 .summary {
     display: flex;
-    justify-content: end;
+    justify-content: flex-end;
 }
 
 .text {
@@ -46,5 +36,9 @@
 .text > svg {
     width: 33px;
     height: 33px;
+}
+
+.drop {
+    opacity: 0.4; 
 }
 

@@ -1,0 +1,22 @@
+.elementEmpty {
+    width: 536px;
+    height: 80px;
+    background: var(--background);
+    border: 3px dashed rgba(76, 76, 255, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 40px;
+}
+
+.top {
+    border-radius: 88px 88px 40px 40px;
+}
+
+.bottom {
+    border-radius: 40px 40px 88px 88px;
+}
+
+.ingredient {
+    margin-left: 32px;
+}

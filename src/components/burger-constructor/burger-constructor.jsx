@@ -1,117 +1,186 @@
-import { useState, useContext, useCallback } from "react";
+import { useCallback } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import Modal from "../modal/modal";
 import ModalOverlay from "../modal-overlay/modal-overlay";
 import OrderDetails from "../order-details/order-details";
 import styles from "./burger-constructor.module.css";
-import AppContext from "../../services/app-context";
-import { createOrder } from "../../utils/api";
 import Error from "../error/error";
 import BurgerConstructorIngredient from "../burger-constructor-ingredient/burger-constructor-ingredient";
+import BurgerConstructorIngredientEmpty from "../burger-constructor-ingredient-empty/burger-constructor-ingredient-empty";
 import {
+    INC_INGREDIENT_COUNTER,
+    DEC_INGREDIENT_COUNTER,
+    CLEAR_INGREDIENTS_COUNTERS,
+} from "../../services/actions/ingredientsActions";
+import {
+    addToConstructor,
     REMOVE_FROM_CONSTRUCTOR,
     CLEAR_CONSTRUCTOR,
-    SAVE_ORDER_NUMBER,
-} from "../../services/app-actions";
+    EXCHANGE_INGREDIENTS,
+} from "../../services/actions/constructorActions";
+import {
+    postOrder,
+    SET_ORDER_ERROR,
+    CLEAR_ORDER_ERROR,
+    CLEAR_ORDER_NUMBER,
+} from "../../services/actions/orderActions";
 import {
     CurrencyIcon,
     Button,
 } from "@ya.praktikum/react-developer-burger-ui-components";
+import { useDrop } from "react-dnd";
 
 function BurgerConstructor() {
-    const {
-        constructor: { bun, list, totalSum },
-        orderNumber,
-        dispatch,
-    } = useContext(AppContext);
-    const [modal, setModal] = useState(false);
-    // Признаки загрузки/ошибки пока оставил в компоненте
-    // Во второй части перенесу в глобальное состояние
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(undefined);
+    const { bun, list, orderNumber, orderRequest, orderError, totalSum } =
+        useSelector((state) => {
+            const totalSum =
+                state.burgerConstructor.list.reduce(
+                    (sum, current) => sum + current.price,
+                    0
+                ) +
+                (state.burgerConstructor.bun
+                    ? state.burgerConstructor.bun.price * 2
+                    : 0);
+            return {
+                ...state.burgerConstructor,
+                ...state.order,
+                totalSum,
+            };
+        });
+    const dispatch = useDispatch();
 
-    const openModal = () => {
-        setModal(true);
+    const [{ isDropBunTop }, dropBunTop] = useDrop({
+        accept: "bun",
+        drop(item) {
+            onDropIngredient(item);
+        },
+        collect: (monitor) => ({
+            isDropBunTop: monitor.canDrop(),
+        }),
+    });
+
+    const [{ isDropBunBottom }, dropBunBottom] = useDrop({
+        accept: "bun",
+        drop(item) {
+            onDropIngredient(item);
+        },
+        collect: (monitor) => ({
+            isDropBunBottom: monitor.canDrop(),
+        }),
+    });
+
+    const [{ isDropIngredient }, dropIngredient] = useDrop({
+        accept: "ingredient",
+        drop(item) {
+            onDropIngredient(item);
+        },
+        collect: (monitor) => ({
+            isDropIngredient: monitor.canDrop(),
+        }),
+    });
+
+    const onDropIngredient = (ingredient) => {
+        dispatch(addToConstructor(ingredient));
+        dispatch({ type: INC_INGREDIENT_COUNTER, data: ingredient });
     };
 
     const closeModal = () => {
-        if (error) setError(undefined);
-        setModal(false);
+        if (orderError) dispatch({ type: CLEAR_ORDER_ERROR });
+        if (orderNumber) {
+            dispatch({ type: CLEAR_ORDER_NUMBER });
+            dispatch({ type: CLEAR_CONSTRUCTOR });
+            dispatch({ type: CLEAR_INGREDIENTS_COUNTERS });
+        }
     };
 
     const handleDeleteItem = useCallback(
         (item) => {
             dispatch({ type: REMOVE_FROM_CONSTRUCTOR, data: item });
+            dispatch({ type: DEC_INGREDIENT_COUNTER, data: item });
         },
         [dispatch]
     );
 
     const handleCreateOrder = () => {
         if (!bun || !list.length) {
-            setError(`В бургере должны быть ${!bun ? "булки" : "ингредиенты"}`);
-            openModal();
+            dispatch({
+                type: SET_ORDER_ERROR,
+                data: `В бургере должны быть ${!bun ? "булки" : "ингредиенты"}`,
+            });
             return;
         }
         const data = {
             ingredients: [bun._id, ...list.map((item) => item._id), bun._id],
         };
-        // Запрос к серверу пока оставил в компоненте, во второй части переделаю на thunk
-        setLoading(true);
-        createOrder(data)
-            .then((result) => {
-                if (result.success) {
-                    dispatch({
-                        type: SAVE_ORDER_NUMBER,
-                        data: result.order.number,
-                    });
-                    dispatch({ type: CLEAR_CONSTRUCTOR });
-                }
-            })
-            .catch(() => {
-                setError("Ошибка соединения с сервером");
-            })
-            .finally(() => {
-                setLoading(false);
-                openModal();
-            });
+        dispatch(postOrder(data));
     };
+
+    const handleDropItem = useCallback(
+        (dragItemId, dropItemId) => {
+            if (dragItemId === dropItemId) return;
+            dispatch({
+                type: EXCHANGE_INGREDIENTS,
+                data: { dragItemId, dropItemId },
+            });
+        },
+        [dispatch]
+    );
 
     return (
         <>
             <section className={`${styles.section} ml-5 mr-5 pt-25 pl-4 pr-4`}>
                 <ul className={`${styles.list}`}>
-                    {bun && (
-                        <li className={`${styles.bun}`}>
+                    <li
+                        ref={dropBunTop}
+                        className={`${styles.bun} ${
+                            isDropIngredient && styles.drop
+                        }`}
+                    >
+                        {bun ? (
                             <BurgerConstructorIngredient
                                 type="top"
                                 isLocked={true}
                                 item={bun}
                             />
-                        </li>
-                    )}
+                        ) : (
+                            <BurgerConstructorIngredientEmpty type="top" />
+                        )}
+                    </li>
                     <ul
-                        className={`${styles.list} ${styles.container} custom-scroll mr-8`}
+                        ref={dropIngredient}
+                        className={`${styles.list} ${styles.container} ${
+                            isDropBunBottom && isDropBunTop && styles.drop
+                        } custom-scroll mr-8`}
                     >
-                        {list.map((item) => (
-                            <li
-                                className={`${styles.item} mr-2`}
-                                key={item.uuid}
-                            >
+                        {list.length ? (
+                            list.map((item) => (
                                 <BurgerConstructorIngredient
+                                    key={item.uuid}
                                     item={item}
                                     handleDelete={handleDeleteItem}
+                                    handleDrop={handleDropItem}
                                 />
-                            </li>
-                        ))}
+                            ))
+                        ) : (
+                            <BurgerConstructorIngredientEmpty />
+                        )}
                     </ul>
-                    {bun && (
-                        <li className={`${styles.bun}`}>
+                    <li
+                        ref={dropBunBottom}
+                        className={`${styles.bun} ${
+                            isDropIngredient && styles.drop
+                        }`}
+                    >
+                        {bun ? (
                             <BurgerConstructorIngredient
                                 type="bottom"
                                 isLocked={true}
                                 item={bun}
                             />
-                        </li>
-                    )}
+                        ) : (
+                            <BurgerConstructorIngredientEmpty type="bottom" />
+                        )}
+                    </li>
                 </ul>
                 {totalSum ? (
                     <span className={`${styles.summary} mt-10`}>
@@ -132,11 +201,11 @@ function BurgerConstructor() {
                     </span>
                 ) : null}
             </section>
-            {loading && <ModalOverlay />}
-            {modal && (
+            {orderRequest && <ModalOverlay />}
+            {(orderNumber || orderError) && (
                 <Modal onClose={closeModal}>
-                    {error ? (
-                        <Error text={error} />
+                    {orderError ? (
+                        <Error text={orderError} />
                     ) : (
                         <OrderDetails orderNumber={orderNumber} />
                     )}

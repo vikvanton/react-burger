@@ -1,25 +1,59 @@
-import { useState, useCallback, useRef, useContext } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import styles from "./burger-ingredients.module.css";
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
+import Modal from "../modal/modal";
+import IngredientDetails from "../ingredient-details/ingredient-details";
 import BurgerIngredientsCategory from "../burger-ingredients-category/burger-ingredients-category";
-import AppContext from "../../services/app-context";
-import { ADD_TO_CONSTRUCTOR } from "../../services/app-actions";
+import {
+    SET_VIEW_INGREDIENT,
+    CLEAR_VIEW_INGREDIENT,
+} from "../../services/actions/viewIngredientActions";
 
 const bunTab = "bun";
 const mainTab = "main";
 const sauceTab = "sauce";
 
 function BurgerIngredients() {
-    const {
-        ingredients: { bun, main, sauce },
-        dispatch,
-    } = useContext(AppContext);
+    const { bun, main, sauce, ingredientInModal } = useSelector((state) => ({
+        ...state.ingredients.categories,
+        ...state.viewIngredient,
+    }));
+    const dispatch = useDispatch();
     const [current, setCurrent] = useState(bunTab);
     const bunRef = useRef();
     const sauceRef = useRef();
     const mainRef = useRef();
+    const containerRef = useRef();
+    const observer = useRef();
 
-    const onTabClick = useCallback((value) => {
+    useEffect(() => {
+        observer.current = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        if (entry.target === bunRef.current) setCurrent(bunTab);
+                        if (entry.target === sauceRef.current)
+                            setCurrent(sauceTab);
+                        if (entry.target === mainRef.current)
+                            setCurrent(mainTab);
+                    }
+                });
+            },
+            {
+                root: containerRef.current,
+                rootMargin: "0% 0% -60% 0%",
+            }
+        );
+        observer.current.observe(bunRef.current);
+        observer.current.observe(sauceRef.current);
+        observer.current.observe(mainRef.current);
+        return () => {
+            observer.current.disconnect();
+        };
+    }, []);
+
+    const onTabClick = (value) => {
         let ref;
         switch (value) {
             case bunTab:
@@ -35,66 +69,80 @@ function BurgerIngredients() {
         }
         ref.current.scrollIntoView({ behavior: "smooth" });
         setCurrent(value);
-    }, []);
+    };
 
-    const addToConstructor = useCallback(
+    const openModal = useCallback(
         (ingredient) => {
-            dispatch({ type: ADD_TO_CONSTRUCTOR, data: ingredient });
+            dispatch({ type: SET_VIEW_INGREDIENT, data: ingredient });
         },
         [dispatch]
     );
 
+    const closeModal = () => {
+        dispatch({ type: CLEAR_VIEW_INGREDIENT });
+    };
+
     return (
-        <section className={`${styles.section} ml-5 mr-5`}>
-            <h1 className={`text text_type_main-large mt-10 mb-5`}>
-                Соберите бургер
-            </h1>
-            <div className={`${styles.tabs} mb-10`}>
-                <Tab
-                    value={bunTab}
-                    active={current === bunTab}
-                    onClick={onTabClick}
+        <>
+            <section className={`${styles.section} ml-5 mr-5`}>
+                <h1 className={`text text_type_main-large mt-10 mb-5`}>
+                    Соберите бургер
+                </h1>
+                <div className={`${styles.tabs} mb-10`}>
+                    <Tab
+                        value={bunTab}
+                        active={current === bunTab}
+                        onClick={onTabClick}
+                    >
+                        Булки
+                    </Tab>
+                    <Tab
+                        value={sauceTab}
+                        active={current === sauceTab}
+                        onClick={onTabClick}
+                    >
+                        Соусы
+                    </Tab>
+                    <Tab
+                        value={mainTab}
+                        active={current === mainTab}
+                        onClick={onTabClick}
+                    >
+                        Начинки
+                    </Tab>
+                </div>
+                <div
+                    ref={containerRef}
+                    className={`${styles.container} custom-scroll`}
                 >
-                    Булки
-                </Tab>
-                <Tab
-                    value={sauceTab}
-                    active={current === sauceTab}
-                    onClick={onTabClick}
-                >
-                    Соусы
-                </Tab>
-                <Tab
-                    value={mainTab}
-                    active={current === mainTab}
-                    onClick={onTabClick}
-                >
-                    Начинки
-                </Tab>
-            </div>
-            <div className={`${styles.container} custom-scroll`}>
-                <BurgerIngredientsCategory
-                    ingredients={bun}
-                    name="Булки"
-                    addToConstructor={addToConstructor}
-                    extraClass="mb-10"
-                    ref={bunRef}
-                />
-                <BurgerIngredientsCategory
-                    ingredients={sauce}
-                    name="Соусы"
-                    addToConstructor={addToConstructor}
-                    extraClass="mb-10"
-                    ref={sauceRef}
-                />
-                <BurgerIngredientsCategory
-                    ingredients={main}
-                    name="Начинки"
-                    addToConstructor={addToConstructor}
-                    ref={mainRef}
-                />
-            </div>
-        </section>
+                    <BurgerIngredientsCategory
+                        ingredients={bun}
+                        name="Булки"
+                        extraClass="mb-10"
+                        ref={bunRef}
+                        callback={openModal}
+                    />
+                    <BurgerIngredientsCategory
+                        ingredients={sauce}
+                        name="Соусы"
+                        extraClass="mb-10"
+                        ref={sauceRef}
+                        callback={openModal}
+                    />
+                    <BurgerIngredientsCategory
+                        ingredients={main}
+                        name="Начинки"
+                        ref={mainRef}
+                        callback={openModal}
+                    />
+                </div>
+            </section>
+            {ingredientInModal && (
+                <Modal header="Детали ингредиента" onClose={closeModal}>
+                    <IngredientDetails ingredient={ingredientInModal} />
+                </Modal>
+            )}
+        </>
     );
 }
 

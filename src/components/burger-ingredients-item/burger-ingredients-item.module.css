@@ -4,7 +4,7 @@
     height: 208px;
 }
 
-.card:hover {
+.info:hover {
     cursor: pointer;
 }
 
@@ -15,4 +15,8 @@
 
 .name {
     text-align: center;
+}
+
+.image {
+    cursor: move;
 }

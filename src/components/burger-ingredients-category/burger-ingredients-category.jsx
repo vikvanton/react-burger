@@ -6,7 +6,7 @@ import { ingredientShape } from "../../utils/data-prop-types";
 
 const BurgerIngredientsCategoryRef = forwardRef(
     function BurgerIngredientsCategory(
-        { ingredients, name, addToConstructor, extraClass },
+        { ingredients, name, callback, extraClass },
         ref
     ) {
         return (
@@ -17,7 +17,7 @@ const BurgerIngredientsCategoryRef = forwardRef(
                         <BurgerIngredientsItem
                             key={item._id}
                             ingredient={item}
-                            addToConstructor={addToConstructor}
+                            callback={callback}
                         />
                     ))}
                 </ul>
@@ -29,7 +29,7 @@ const BurgerIngredientsCategoryRef = forwardRef(
 BurgerIngredientsCategoryRef.propTypes = {
     ingredients: PropTypes.arrayOf(ingredientShape.isRequired).isRequired,
     name: PropTypes.string.isRequired,
-    addToConstructor: PropTypes.func.isRequired,
+    callback: PropTypes.func.isRequired,
     extraClass: PropTypes.string,
 };
 

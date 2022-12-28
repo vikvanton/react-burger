@@ -1,14 +1,12 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useHistory, Redirect } from "react-router";
 import styles from "./burger-ingredients.module.css";
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 import Modal from "../modal/modal";
 import IngredientDetails from "../ingredient-details/ingredient-details";
 import BurgerIngredientsCategory from "../burger-ingredients-category/burger-ingredients-category";
-import {
-    SET_VIEW_INGREDIENT,
-    CLEAR_VIEW_INGREDIENT,
-} from "../../services/actions/viewIngredientActions";
+import { SET_VIEW_INGREDIENT } from "../../services/actions/viewIngredientActions";
 
 const bunTab = "bun";
 const mainTab = "main";
@@ -26,6 +24,7 @@ function BurgerIngredients() {
     const mainRef = useRef();
     const containerRef = useRef();
     const observer = useRef();
+    const history = useHistory();
 
     useEffect(() => {
         observer.current = new IntersectionObserver(
@@ -42,7 +41,7 @@ function BurgerIngredients() {
             },
             {
                 root: containerRef.current,
-                rootMargin: "0% 0% -60% 0%",
+                rootMargin: "-20% 0% -70% 0%",
             }
         );
         observer.current.observe(bunRef.current);
@@ -74,12 +73,16 @@ function BurgerIngredients() {
     const openModal = useCallback(
         (ingredient) => {
             dispatch({ type: SET_VIEW_INGREDIENT, data: ingredient });
+            history.push({
+                pathname: `/ingredient/${ingredient._id}`,
+                state: { background: history.location },
+            });
         },
-        [dispatch]
+        [dispatch, history]
     );
 
     const closeModal = () => {
-        dispatch({ type: CLEAR_VIEW_INGREDIENT });
+        history.goBack();
     };
 
     return (
@@ -137,10 +140,16 @@ function BurgerIngredients() {
                     />
                 </div>
             </section>
-            {ingredientInModal && (
-                <Modal header="Детали ингредиента" onClose={closeModal}>
-                    <IngredientDetails ingredient={ingredientInModal} />
-                </Modal>
+            {history.location.state?.background && (
+                <>
+                    {ingredientInModal ? (
+                        <Modal header="Детали ингредиента" onClose={closeModal}>
+                            <IngredientDetails ingredient={ingredientInModal} />
+                        </Modal>
+                    ) : (
+                        <Redirect to={history.location.pathname} />
+                    )}
+                </>
             )}
         </>
     );

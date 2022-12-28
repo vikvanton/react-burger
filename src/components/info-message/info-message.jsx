@@ -1,22 +1,22 @@
-import { InfoIcon } from "@ya.praktikum/react-developer-burger-ui-components";
-import styles from "./error.module.css";
+import styles from "./info-message.module.css";
 import PropTypes from "prop-types";
 
-function Error({ text }) {
+function InfoMessage({ text, children }) {
     return (
         <section className={`${styles.container} text text_type_main-medium`}>
-            <InfoIcon type="error" />
+            {children}
             {text ? <p className="pb-15">{text}</p> : null}
         </section>
     );
 }
 
-Error.propTypes = {
+InfoMessage.propTypes = {
     text: PropTypes.string,
+    children: PropTypes.element.isRequired,
 };
 
-Error.defaultProps = {
+InfoMessage.defaultProps = {
     text: "",
 };
 
-export default Error;
+export default InfoMessage;

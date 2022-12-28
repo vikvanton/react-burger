@@ -1,3 +1,4 @@
+import { memo } from "react";
 import styles from "./burger-constructor-ingredient.module.css";
 import PropTypes from "prop-types";
 import { ingredientShape } from "../../utils/data-prop-types";
@@ -86,4 +87,4 @@ BurgerConstructorIngredient.defaultProps = {
     isLocked: undefined,
 };
 
-export default BurgerConstructorIngredient;
+export default memo(BurgerConstructorIngredient);

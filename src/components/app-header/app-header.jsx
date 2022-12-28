@@ -1,4 +1,6 @@
 import styles from "./app-header.module.css";
+import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
 import {
     Logo,
     BurgerIcon,
@@ -7,42 +9,53 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 
 function AppHeader() {
+    const refreshToken = useSelector((state) => state.auth.refreshToken);
+
     return (
         <header className={styles.header}>
             <nav>
                 <ul className={styles.list}>
                     <li className="mt-4 mb-4 mr-2 pt-4 pb-4 pl-5 pr-5">
-                        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                        <a
-                            href="#"
-                            className={`${styles.link} ${styles.linkSelected} text text_type_main-default`}
+                        <NavLink
+                            to="/"
+                            className={`${styles.link} text text_type_main-default`}
+                            activeClassName={styles.linkSelected}
+                            exact
                         >
-                            <BurgerIcon type="primary" />
+                            <BurgerIcon type="secondary" />
                             Конструктор
-                        </a>
+                        </NavLink>
                     </li>
                     <li className="mt-4 mb-4 pt-4 pb-4 pl-5 pr-5">
-                        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                        <a
-                            href="#"
-                            className={`${styles.link} text text_type_main-default text_color_inactive`}
+                        <NavLink
+                            to="/feed"
+                            className={`${styles.link} text text_type_main-default`}
+                            activeClassName={styles.linkSelected}
                         >
                             <ListIcon type="secondary" />
                             Лента заказов
-                        </a>
+                        </NavLink>
                     </li>
                     <li className={styles.logo}>
                         <Logo />
                     </li>
                     <li className="mt-4 mb-4 pt-4 pb-4 pl-5 pr-5">
-                        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                        <a
-                            href="#"
-                            className={`${styles.link} text text_type_main-default text_color_inactive`}
+                        <NavLink
+                            to={refreshToken ? "/profile" : "/login"}
+                            className={`${styles.link} text text_type_main-default`}
+                            activeClassName={styles.linkSelected}
+                            isActive={(match, location) => {
+                                return (
+                                    match ||
+                                    location.pathname === "/register" ||
+                                    location.pathname === "/forgot-password" ||
+                                    location.pathname === "/reset-password"
+                                );
+                            }}
                         >
                             <ProfileIcon type="secondary" />
-                            Личный кабинет
-                        </a>
+                            {refreshToken ? "Личный кабинет" : "Войти"}
+                        </NavLink>
                     </li>
                 </ul>
             </nav>

@@ -6,11 +6,10 @@ import InfoMessage from "../../components/info-message/info-message";
 import { InfoIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { selectIngredientsError } from "../../services/selectors/ingredientsSelectors";
 
 function MainPage() {
-    const { ingredientsError } = useSelector((state) => ({
-        ingredientsError: state.ingredients.ingredientsError,
-    }));
+    const ingredientsError = useSelector(selectIngredientsError);
 
     return (
         <>

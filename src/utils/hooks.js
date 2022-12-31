@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserDataRequest, refreshTokensRequest } from "./api";
 import {
@@ -9,6 +9,7 @@ import {
     SET_USER_DATA,
     CLEAR_AUTH_SUCCESS,
 } from "../services/actions/authActions";
+
 // Хук для проверки авторизации
 export const useCheckAuth = () => {
     const { accessToken, refreshToken } = useSelector((state) => ({
@@ -69,4 +70,38 @@ export const useCheckAuth = () => {
     }, []);
 
     return { checking, checkAuth };
+};
+
+export const useIntersectionObserver = (
+    containerRef,
+    targetRefs,
+    targetNames,
+    setCurrent
+) => {
+    const observer = useRef();
+
+    useEffect(() => {
+        observer.current = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        targetRefs.forEach((targetRef, index) => {
+                            targetRef.current === entry.target &&
+                                setCurrent(targetNames[index]);
+                        });
+                    }
+                });
+            },
+            {
+                root: containerRef.current,
+                rootMargin: "-20% 0% -70% 0%",
+            }
+        );
+        targetRefs.forEach((targetRef) => {
+            observer.current.observe(targetRef.current);
+        });
+        return () => {
+            observer.current.disconnect();
+        };
+    }, []);
 };

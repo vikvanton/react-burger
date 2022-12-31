@@ -31,34 +31,27 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useDrop } from "react-dnd";
 import { useCheckAuth } from "../../utils/hooks";
+import {
+    selectConstructorBun,
+    selectConstructorList,
+    selectTotalSum,
+} from "../../services/selectors/constructorSelectors";
+import {
+    selectOrderNumber,
+    selectOrderRequest,
+    selectOrderError,
+} from "../../services/selectors/orderSelectors";
+import { selectAuthRequest } from "../../services/selectors/authSelectors";
 
 function BurgerConstructor() {
-    const {
-        bun,
-        list,
-        orderNumber,
-        orderRequest,
-        orderError,
-        authRequest,
-        totalSum,
-    } = useSelector((state) => {
-        const totalSum =
-            state.burgerConstructor.list.reduce(
-                (sum, current) => sum + current.price,
-                0
-            ) +
-            (state.burgerConstructor.bun
-                ? state.burgerConstructor.bun.price * 2
-                : 0);
-        return {
-            ...state.burgerConstructor,
-            ...state.order,
-            authRequest: state.auth.authRequest,
-            totalSum,
-        };
-    });
+    const bun = useSelector(selectConstructorBun);
+    const list = useSelector(selectConstructorList);
+    const orderNumber = useSelector(selectOrderNumber);
+    const orderRequest = useSelector(selectOrderRequest);
+    const orderError = useSelector(selectOrderError);
+    const authRequest = useSelector(selectAuthRequest);
+    const totalSum = useSelector(selectTotalSum);
     const dispatch = useDispatch();
-
     let { checkAuth } = useCheckAuth();
 
     const [{ isDropBunTop }, dropBunTop] = useDrop({

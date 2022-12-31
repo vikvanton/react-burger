@@ -16,6 +16,12 @@ import {
     InfoIcon,
     CheckMarkIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
+import {
+    selectRestorationProcess,
+    selectRestorationComplete,
+    selectPassRestorationRequest,
+    selectPassRestorationError,
+} from "../../services/selectors/passRestorationSelectors";
 
 function ResetPassword() {
     const location = useLocation();
@@ -26,19 +32,10 @@ function ResetPassword() {
         code: false,
     });
     const [show, setShow] = useState(false);
-    const {
-        accessToken,
-        restorationProcess,
-        restorationComplete,
-        passRestorationRequest,
-        passRestorationError,
-    } = useSelector((state) => ({
-        accessToken: state.auth.accessToken,
-        restorationProcess: state.passRestoration.restorationProcess,
-        restorationComplete: state.passRestoration.restorationComplete,
-        passRestorationRequest: state.passRestoration.passRestorationRequest,
-        passRestorationError: state.passRestoration.passRestorationError,
-    }));
+    const restorationProcess = useSelector(selectRestorationProcess);
+    const restorationComplete = useSelector(selectRestorationComplete);
+    const passRestorationRequest = useSelector(selectPassRestorationRequest);
+    const passRestorationError = useSelector(selectPassRestorationError);
     const dispatch = useDispatch();
 
     const onChange = (e) => {
@@ -82,7 +79,6 @@ function ResetPassword() {
         dispatch(resetPass(data));
     };
 
-    if (accessToken) return <Redirect to="/" />;
     if (location.state?.prev === "/forgot-password" && restorationProcess)
         return (
             <>

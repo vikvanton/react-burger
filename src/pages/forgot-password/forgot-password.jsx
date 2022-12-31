@@ -14,21 +14,18 @@ import {
     Button,
     InfoIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
+import {
+    selectRestorationProcess,
+    selectPassRestorationRequest,
+    selectPassRestorationError,
+} from "../../services/selectors/passRestorationSelectors";
 
 function ForgotPassword() {
     const [email, setEmail] = useState("");
     const [emailError, setEmailError] = useState(false);
-    const {
-        accessToken,
-        restorationProcess,
-        passRestorationRequest,
-        passRestorationError,
-    } = useSelector((state) => ({
-        accessToken: state.auth.accessToken,
-        restorationProcess: state.passRestoration.restorationProcess,
-        passRestorationRequest: state.passRestoration.passRestorationRequest,
-        passRestorationError: state.passRestoration.passRestorationError,
-    }));
+    const restorationProcess = useSelector(selectRestorationProcess);
+    const passRestorationRequest = useSelector(selectPassRestorationRequest);
+    const passRestorationError = useSelector(selectPassRestorationError);
     const dispatch = useDispatch();
 
     const closeModal = () => {
@@ -48,8 +45,6 @@ function ForgotPassword() {
         }
         dispatch(restorePass({ email }));
     };
-
-    if (accessToken) return <Redirect to="/" />;
 
     if (restorationProcess)
         return (

@@ -11,6 +11,10 @@ import {
     Button,
     InfoIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
+import {
+    selectAuthRequest,
+    selectAuthError,
+} from "../../services/selectors/authSelectors";
 
 function Register() {
     const [form, setForm] = useState({ name: "", email: "", password: "" });
@@ -20,13 +24,8 @@ function Register() {
         password: false,
     });
     const [show, setShow] = useState(false);
-    const { accessToken, authRequest, authError } = useSelector((state) => {
-        return {
-            accessToken: state.auth.accessToken,
-            authRequest: state.auth.authRequest,
-            authError: state.auth.authError,
-        };
-    });
+    const authRequest = useSelector(selectAuthRequest);
+    const authError = useSelector(selectAuthError);
     const dispatch = useDispatch();
 
     const onChange = (e) => {
@@ -64,10 +63,6 @@ function Register() {
         };
         dispatch(setAuth(data, "register"));
     };
-
-    if (accessToken) {
-        return <Redirect to="/" />;
-    }
 
     return (
         <>

@@ -5,9 +5,10 @@ import { NavLink } from "react-router-dom";
 import { clearAuth } from "../../services/actions/authActions";
 import NotFound from "../not-found/not-found";
 import ProfileForm from "../../components/profile-form/profile-form";
+import { selectRefreshToken } from "../../services/selectors/authSelectors";
 
 const Profile = () => {
-    const refreshToken = useSelector((state) => state.auth.refreshToken);
+    const refreshToken = useSelector(selectRefreshToken);
     const dispatch = useDispatch();
 
     const onLogout = () => {

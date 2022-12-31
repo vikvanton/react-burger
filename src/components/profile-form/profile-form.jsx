@@ -13,16 +13,22 @@ import {
     Button,
     InfoIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
+import {
+    selectName,
+    selectEmail,
+    selectAuthRequest,
+    selectAuthError,
+} from "../../services/selectors/authSelectors";
 
 function ProfileForm() {
-    const { name, email, authRequest, authError } = useSelector((state) => ({
-        ...state.auth.user,
-        authRequest: state.auth.authRequest,
-        authError: state.auth.authError,
-    }));
+    const name = useSelector(selectName);
+    const email = useSelector(selectEmail);
+    const authRequest = useSelector(selectAuthRequest);
+    const authError = useSelector(selectAuthError);
+    const dispatch = useDispatch();
     const initialFormData = {
-        name: name,
-        email: email,
+        name,
+        email,
         password: "",
     };
     const initialFormErrors = {
@@ -30,7 +36,6 @@ function ProfileForm() {
         email: false,
         password: false,
     };
-    const dispatch = useDispatch();
     const [formChanging, setFormChanging] = useState(false);
     const [form, setForm] = useState(initialFormData);
     const [formErrors, setFormErrors] = useState(initialFormErrors);

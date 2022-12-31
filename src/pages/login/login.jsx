@@ -12,6 +12,12 @@ import {
     Button,
     InfoIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
+import {
+    selectAccessToken,
+    selectAuthRequest,
+    selectAuthError,
+} from "../../services/selectors/authSelectors";
+import { selectRestorationProcess } from "../../services/selectors/passRestorationSelectors";
 
 function Login() {
     const [form, setForm] = useState({ email: "", password: "" });
@@ -20,17 +26,11 @@ function Login() {
         password: false,
     });
     const [show, setShow] = useState(false);
-    const { accessToken, authRequest, authError, restorationProcess } =
-        useSelector((state) => {
-            return {
-                accessToken: state.auth.accessToken,
-                authRequest: state.auth.authRequest,
-                authError: state.auth.authError,
-                restorationProcess: state.passRestoration.restorationProcess,
-            };
-        });
+    const accessToken = useSelector(selectAccessToken);
+    const authRequest = useSelector(selectAuthRequest);
+    const authError = useSelector(selectAuthError);
+    const restorationProcess = useSelector(selectRestorationProcess);
     const dispatch = useDispatch();
-
     const location = useLocation();
 
     useEffect(() => {

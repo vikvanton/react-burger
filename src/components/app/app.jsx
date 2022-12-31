@@ -15,11 +15,10 @@ import ProtectedRoute from "../protected-route/protected-route";
 import NotFound from "../../pages/not-found/not-found";
 import ModalOverlay from "../modal-overlay/modal-overlay";
 import { useCheckAuth } from "../../utils/hooks";
+import { selectIngredientsRequest } from "../../services/selectors/ingredientsSelectors";
 
 function App() {
-    const ingredientsRequest = useSelector(
-        (state) => state.ingredients.ingredientsRequest
-    );
+    const ingredientsRequest = useSelector(selectIngredientsRequest);
     const { checking, checkAuth } = useCheckAuth();
     const dispatch = useDispatch();
     const location = useLocation();
@@ -46,15 +45,15 @@ function App() {
                         <Route path="/login">
                             <Login />
                         </Route>
-                        <Route path="/register">
+                        <ProtectedRoute path="/register" forUnAuth>
                             <Register />
-                        </Route>
-                        <Route path="/forgot-password">
+                        </ProtectedRoute>
+                        <ProtectedRoute path="/forgot-password" forUnAuth>
                             <ForgotPassword />
-                        </Route>
-                        <Route path="/reset-password">
+                        </ProtectedRoute>
+                        <ProtectedRoute path="/reset-password" forUnAuth>
                             <ResetPassword />
-                        </Route>
+                        </ProtectedRoute>
                         <ProtectedRoute path="/profile">
                             <Profile />
                         </ProtectedRoute>

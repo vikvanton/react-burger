@@ -12,7 +12,7 @@ export const CLEAR_AUTH_SUCCESS = "CLEAR_AUTH_SUCCESS";
 export const AUTH_ERROR = "AUTH_ERROR";
 export const CLEAR_AUTH_ERROR = "CLEAR_AUTH_ERROR";
 export const SET_USER_DATA = "SET_USER_DATA";
-export const SET_TOKENS = "SET_TOKENS_AND";
+export const SET_TOKENS = "SET_TOKENS";
 export const PATCH_USER_SUCCESS = "PATCH_USER_SUCCESS";
 
 export const setAuth = (data, type) => {

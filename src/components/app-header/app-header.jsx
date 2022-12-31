@@ -1,3 +1,4 @@
+import { memo } from "react";
 import styles from "./app-header.module.css";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -7,9 +8,10 @@ import {
     ListIcon,
     ProfileIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
+import { selectRefreshToken } from "../../services/selectors/authSelectors";
 
 function AppHeader() {
-    const refreshToken = useSelector((state) => state.auth.refreshToken);
+    const refreshToken = useSelector(selectRefreshToken);
 
     return (
         <header className={styles.header}>
@@ -63,4 +65,4 @@ function AppHeader() {
     );
 }
 
-export default AppHeader;
+export default memo(AppHeader);

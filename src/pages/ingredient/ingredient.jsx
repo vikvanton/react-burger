@@ -3,19 +3,11 @@ import { useSelector } from "react-redux";
 import IngredientDetails from "../../components/ingredient-details/ingredient-details";
 import InfoMessage from "../../components/info-message/info-message";
 import { InfoIcon } from "@ya.praktikum/react-developer-burger-ui-components";
+import { selectIngredient } from "../../services/selectors/ingredientsSelectors";
 
 function Ingredient() {
     const { id } = useParams();
-    const ingredient = useSelector((state) => {
-        let ingredient;
-        for (let category in state.ingredients.categories) {
-            ingredient = state.ingredients.categories[category].find(
-                (item) => item._id === id
-            );
-            if (ingredient) break;
-        }
-        return ingredient;
-    });
+    const ingredient = useSelector(selectIngredient(id));
 
     return (
         <>

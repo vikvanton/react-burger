@@ -4,7 +4,7 @@ import Modal from "../modal/modal";
 import ModalOverlay from "../modal-overlay/modal-overlay";
 import OrderDetails from "../order-details/order-details";
 import styles from "./burger-constructor.module.css";
-import Error from "../error/error";
+import InfoMessage from "../info-message/info-message";
 import BurgerConstructorIngredient from "../burger-constructor-ingredient/burger-constructor-ingredient";
 import BurgerConstructorIngredientEmpty from "../burger-constructor-ingredient-empty/burger-constructor-ingredient-empty";
 import {
@@ -27,27 +27,32 @@ import {
 import {
     CurrencyIcon,
     Button,
+    InfoIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useDrop } from "react-dnd";
+import { useCheckAuth } from "../../utils/hooks";
+import {
+    selectConstructorBun,
+    selectConstructorList,
+    selectTotalSum,
+} from "../../services/selectors/constructorSelectors";
+import {
+    selectOrderNumber,
+    selectOrderRequest,
+    selectOrderError,
+} from "../../services/selectors/orderSelectors";
+import { selectAuthRequest } from "../../services/selectors/authSelectors";
 
 function BurgerConstructor() {
-    const { bun, list, orderNumber, orderRequest, orderError, totalSum } =
-        useSelector((state) => {
-            const totalSum =
-                state.burgerConstructor.list.reduce(
-                    (sum, current) => sum + current.price,
-                    0
-                ) +
-                (state.burgerConstructor.bun
-                    ? state.burgerConstructor.bun.price * 2
-                    : 0);
-            return {
-                ...state.burgerConstructor,
-                ...state.order,
-                totalSum,
-            };
-        });
+    const bun = useSelector(selectConstructorBun);
+    const list = useSelector(selectConstructorList);
+    const orderNumber = useSelector(selectOrderNumber);
+    const orderRequest = useSelector(selectOrderRequest);
+    const orderError = useSelector(selectOrderError);
+    const authRequest = useSelector(selectAuthRequest);
+    const totalSum = useSelector(selectTotalSum);
     const dispatch = useDispatch();
+    let { checkAuth } = useCheckAuth();
 
     const [{ isDropBunTop }, dropBunTop] = useDrop({
         accept: "bun",
@@ -109,10 +114,30 @@ function BurgerConstructor() {
             });
             return;
         }
-        const data = {
-            ingredients: [bun._id, ...list.map((item) => item._id), bun._id],
-        };
-        dispatch(postOrder(data));
+        // При попытке сделать заказ проверяем, авторизован ли пользователь.
+        // Можно было просто проверить аксесстокен в хранилище и добавить в хедер запроса аксесстокен,
+        // но, как я понял, запрос на заказ может выполнятся и без токена, поэтому предварительно
+        // проверяем на валидность
+        checkAuth().then((isAuth) => {
+            // Делаем заказ, если авторизация подтверждена.
+            if (isAuth) {
+                const data = {
+                    ingredients: [
+                        bun._id,
+                        ...list.map((item) => item._id),
+                        bun._id,
+                    ],
+                };
+                dispatch(postOrder(data));
+            } else {
+                // Если нет, то выводим сообщение. По заданию было редиректить на /логин
+                // но мне кажется, так информативнее)
+                dispatch({
+                    type: SET_ORDER_ERROR,
+                    data: "Войдите чтобы сделать заказ",
+                });
+            }
+        });
     };
 
     const handleDropItem = useCallback(
@@ -201,11 +226,13 @@ function BurgerConstructor() {
                     </span>
                 ) : null}
             </section>
-            {orderRequest && <ModalOverlay />}
+            {(orderRequest || authRequest) && <ModalOverlay />}
             {(orderNumber || orderError) && (
                 <Modal onClose={closeModal}>
                     {orderError ? (
-                        <Error text={orderError} />
+                        <InfoMessage text={orderError}>
+                            <InfoIcon type="error" />
+                        </InfoMessage>
                     ) : (
                         <OrderDetails orderNumber={orderNumber} />
                     )}

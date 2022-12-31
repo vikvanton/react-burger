@@ -3,8 +3,3 @@
     justify-content: center;
     height: calc(100vh - 88px);
 }
-
-.container {
-    width: 1280px;
-    display: flex;
-}

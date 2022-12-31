@@ -1,57 +1,43 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useHistory, Redirect } from "react-router";
 import styles from "./burger-ingredients.module.css";
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 import Modal from "../modal/modal";
 import IngredientDetails from "../ingredient-details/ingredient-details";
 import BurgerIngredientsCategory from "../burger-ingredients-category/burger-ingredients-category";
+import { useIntersectionObserver } from "../../utils/hooks";
+import { SET_VIEW_INGREDIENT } from "../../services/actions/viewIngredientActions";
+import { selectIngredientInModal } from "../../services/selectors/viewIngredientSelectors";
 import {
-    SET_VIEW_INGREDIENT,
-    CLEAR_VIEW_INGREDIENT,
-} from "../../services/actions/viewIngredientActions";
+    selectBun,
+    selectMain,
+    selectSauce,
+} from "../../services/selectors/ingredientsSelectors";
 
 const bunTab = "bun";
 const mainTab = "main";
 const sauceTab = "sauce";
 
 function BurgerIngredients() {
-    const { bun, main, sauce, ingredientInModal } = useSelector((state) => ({
-        ...state.ingredients.categories,
-        ...state.viewIngredient,
-    }));
+    const bun = useSelector(selectBun);
+    const main = useSelector(selectMain);
+    const sauce = useSelector(selectSauce);
+    const ingredientInModal = useSelector(selectIngredientInModal);
     const dispatch = useDispatch();
     const [current, setCurrent] = useState(bunTab);
     const bunRef = useRef();
     const sauceRef = useRef();
     const mainRef = useRef();
     const containerRef = useRef();
-    const observer = useRef();
+    const history = useHistory();
 
-    useEffect(() => {
-        observer.current = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        if (entry.target === bunRef.current) setCurrent(bunTab);
-                        if (entry.target === sauceRef.current)
-                            setCurrent(sauceTab);
-                        if (entry.target === mainRef.current)
-                            setCurrent(mainTab);
-                    }
-                });
-            },
-            {
-                root: containerRef.current,
-                rootMargin: "0% 0% -60% 0%",
-            }
-        );
-        observer.current.observe(bunRef.current);
-        observer.current.observe(sauceRef.current);
-        observer.current.observe(mainRef.current);
-        return () => {
-            observer.current.disconnect();
-        };
-    }, []);
+    useIntersectionObserver(
+        containerRef,
+        [bunRef, sauceRef, mainRef],
+        [bunTab, sauceTab, mainTab],
+        setCurrent
+    );
 
     const onTabClick = (value) => {
         let ref;
@@ -74,12 +60,16 @@ function BurgerIngredients() {
     const openModal = useCallback(
         (ingredient) => {
             dispatch({ type: SET_VIEW_INGREDIENT, data: ingredient });
+            history.push({
+                pathname: `/ingredient/${ingredient._id}`,
+                state: { background: history.location },
+            });
         },
-        [dispatch]
+        [dispatch, history]
     );
 
     const closeModal = () => {
-        dispatch({ type: CLEAR_VIEW_INGREDIENT });
+        history.goBack();
     };
 
     return (
@@ -137,10 +127,16 @@ function BurgerIngredients() {
                     />
                 </div>
             </section>
-            {ingredientInModal && (
-                <Modal header="Детали ингредиента" onClose={closeModal}>
-                    <IngredientDetails ingredient={ingredientInModal} />
-                </Modal>
+            {history.location.state?.background && (
+                <>
+                    {ingredientInModal ? (
+                        <Modal header="Детали ингредиента" onClose={closeModal}>
+                            <IngredientDetails ingredient={ingredientInModal} />
+                        </Modal>
+                    ) : (
+                        <Redirect to={history.location.pathname} />
+                    )}
+                </>
             )}
         </>
     );

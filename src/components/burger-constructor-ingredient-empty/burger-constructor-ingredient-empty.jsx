@@ -1,3 +1,4 @@
+import { memo } from "react";
 import PropTypes from "prop-types";
 import styles from "./burger-constructor-ingredient-empty.module.css";
 
@@ -27,4 +28,4 @@ BurgerConstructorIngredientEmpty.defaultProps = {
     type: undefined,
 };
 
-export default BurgerConstructorIngredientEmpty;
+export default memo(BurgerConstructorIngredientEmpty);

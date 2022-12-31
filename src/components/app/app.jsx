@@ -1,44 +1,69 @@
-import { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import styles from "./app.module.css";
-import AppHeader from "../app-header/app-header";
-import BurgerIngredients from "../burger-ingredients/burger-ingredients";
-import BurgerConstructor from "../burger-constructor/burger-constructor";
-import Error from "../error/error";
+import { useEffect } from "react";
+import { Switch, Route, useLocation } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import { getIngredients } from "../../services/actions/ingredientsActions";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
+import AppHeader from "../app-header/app-header";
+import MainPage from "../../pages/main-page/main-page";
+import Ingredient from "../../pages/ingredient/ingredient";
+import Login from "../../pages/login/login";
+import Register from "../../pages/register/register";
+import ForgotPassword from "../../pages/forgot-password/forgot-password";
+import ResetPassword from "../../pages/reset-password/reset-password";
+import Profile from "../../pages/profile/profile";
+import ProtectedRoute from "../protected-route/protected-route";
+import NotFound from "../../pages/not-found/not-found";
+import ModalOverlay from "../modal-overlay/modal-overlay";
+import { useCheckAuth } from "../../utils/hooks";
+import { selectIngredientsRequest } from "../../services/selectors/ingredientsSelectors";
 
 function App() {
-    const { ingredientsRequest, ingredientsError } = useSelector((state) => ({
-        ingredientsRequest: state.ingredients.ingredientsRequest,
-        ingredientsError: state.ingredients.ingredientsError,
-    }));
+    const ingredientsRequest = useSelector(selectIngredientsRequest);
+    const { checking, checkAuth } = useCheckAuth();
     const dispatch = useDispatch();
+    const location = useLocation();
+    const background = location.state?.background;
 
     useEffect(() => {
         dispatch(getIngredients());
-    }, [dispatch]);
+        // Проверяем, авторизован ли пользователь
+        checkAuth();
+    }, [checkAuth, dispatch]);
 
     return (
         <>
-            {!ingredientsRequest && (
-                <>
-                    <AppHeader />
-                    <main className={styles.main}>
-                        {ingredientsError ? (
-                            <Error text={ingredientsError} />
-                        ) : (
-                            <DndProvider backend={HTML5Backend}>
-                                <div className={styles.container}>
-                                    <BurgerIngredients />
-                                    <BurgerConstructor />
-                                </div>
-                            </DndProvider>
-                        )}
-                    </main>
-                </>
-            )}
+            <AppHeader />
+            <main className={styles.main}>
+                {!ingredientsRequest && !checking && (
+                    <Switch location={background || location}>
+                        <Route path="/" exact>
+                            <MainPage />
+                        </Route>
+                        <Route path="/ingredient/:id">
+                            <Ingredient />
+                        </Route>
+                        <Route path="/login">
+                            <Login />
+                        </Route>
+                        <ProtectedRoute path="/register" forUnAuth>
+                            <Register />
+                        </ProtectedRoute>
+                        <ProtectedRoute path="/forgot-password" forUnAuth>
+                            <ForgotPassword />
+                        </ProtectedRoute>
+                        <ProtectedRoute path="/reset-password" forUnAuth>
+                            <ResetPassword />
+                        </ProtectedRoute>
+                        <ProtectedRoute path="/profile">
+                            <Profile />
+                        </ProtectedRoute>
+                        <Route>
+                            <NotFound />
+                        </Route>
+                    </Switch>
+                )}
+            </main>
+            {checking && <ModalOverlay />}
         </>
     );
 }

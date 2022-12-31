@@ -1,0 +1,19 @@
+.login {
+    margin-top: 120px;
+    text-align: center;
+}
+
+.btn {
+    display: block;
+    margin: auto;
+}
+
+.link {
+    text-decoration: none;
+    color: var(--colors-interface-accent);
+    transition: all 0.5s ease;
+}
+
+.link:hover {
+    color: var(--text-primary-color);
+}

@@ -1,0 +1,45 @@
+.profile {
+    position: relative;
+    text-align: center;
+    width: 480px;
+}
+
+.btn {
+    margin: auto;
+}
+
+.btnControl {
+    display: flex;
+}
+
+.link {
+    text-decoration: none;
+    color: var(--text-inactive-color);
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+
+.link:hover, .linkSelected {
+    color: var(--text-primary-color);
+}
+
+.nav {
+    margin-top: 120px;
+    max-width: 320px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 80px;
+    position: absolute;
+    left: -380px
+}
+
+.nav > ul {
+    list-style-type: none;
+}
+
+.nav > ul li {
+    display: flex;
+    align-items: center;
+    height: 64px;
+}

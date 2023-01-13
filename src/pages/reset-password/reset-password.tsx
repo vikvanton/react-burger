@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { SyntheticEvent, useState } from "react";
 import styles from "./reset-password.module.css";
+import { History } from "history";
 import { useSelector, useDispatch } from "react-redux";
-import { Link, useLocation, Redirect, useHistory } from "react-router-dom";
+import { Link, Redirect, useHistory } from "react-router-dom";
 import ModalOverlay from "../../components/modal-overlay/modal-overlay";
 import Modal from "../../components/modal/modal";
 import InfoMessage from "../../components/info-message/info-message";
+import { TLocationPrevState, TResetPassForm } from "../../utils/types";
 import {
     resetPass,
     CLEAR_PASS_RESTORATION_ERROR,
@@ -23,27 +25,27 @@ import {
     selectPassRestorationError,
 } from "../../services/selectors/passRestorationSelectors";
 
-function ResetPassword() {
-    const location = useLocation();
-    const history = useHistory();
-    const [form, setForm] = useState({ password: "", code: "" });
-    const [formErrors, setFormErrors] = useState({
+function ResetPassword(): JSX.Element {
+    const history: History<TLocationPrevState> = useHistory<TLocationPrevState>();
+    const [form, setForm] = useState<TResetPassForm<string>>({ password: "", token: "" });
+    const [formErrors, setFormErrors] = useState<TResetPassForm<boolean>>({
         password: false,
-        code: false,
+        token: false,
     });
     const [show, setShow] = useState(false);
-    const restorationProcess = useSelector(selectRestorationProcess);
-    const restorationComplete = useSelector(selectRestorationComplete);
-    const passRestorationRequest = useSelector(selectPassRestorationRequest);
-    const passRestorationError = useSelector(selectPassRestorationError);
-    const dispatch = useDispatch();
+    const restorationProcess: boolean = useSelector<any, boolean>(selectRestorationProcess);
+    const restorationComplete: boolean = useSelector<any, boolean>(selectRestorationComplete);
+    const passRestorationRequest: boolean = useSelector<any, boolean>(selectPassRestorationRequest);
+    const passRestorationError: string = useSelector<any, string>(selectPassRestorationError);
+    const dispatch: any = useDispatch<any>();
 
-    const onChange = (e) => {
-        setFormErrors({ ...formErrors, [e.target.name]: false });
-        setForm({ ...form, [e.target.name]: e.target.value });
+    const onChange = (e: SyntheticEvent): void => {
+        const target = e.target as HTMLInputElement;
+        setFormErrors({ ...formErrors, [target.name]: false });
+        setForm({ ...form, [target.name]: target.value });
     };
 
-    const closeModal = () => {
+    const closeModal = (): void => {
         if (passRestorationError) {
             dispatch({ type: CLEAR_PASS_RESTORATION_ERROR });
             return;
@@ -54,38 +56,34 @@ function ResetPassword() {
         }
     };
 
-    const onIconClick = () => {
+    const onIconClick = (): void => {
         setShow(!show);
     };
 
-    const onFormSubmit = (e) => {
+    const onFormSubmit = (e: SyntheticEvent): void => {
         e.preventDefault();
-        const noValidPass =
-            !form.password ||
-            form.password.length < 6 ||
-            form.password.length > 15;
-        const checkFormValid = {
+        const noValidPass: boolean =
+            !form.password || form.password.length < 6 || form.password.length > 15;
+        const checkFormValid: TResetPassForm<boolean> = {
             password: noValidPass,
-            code: !form.code,
+            token: !form.token,
         };
-        if (noValidPass || !form.code) {
+        if (noValidPass || !form.token) {
             setFormErrors(checkFormValid);
             return;
         }
-        const data = {
+        const data: TResetPassForm<string> = {
             password: form.password,
-            token: form.code,
+            token: form.token,
         };
         dispatch(resetPass(data));
     };
 
-    if (location.state?.prev === "/forgot-password" && restorationProcess)
+    if (history.location.state?.prev === "/forgot-password" && restorationProcess)
         return (
             <>
                 <section className={styles.login}>
-                    <h1 className="mb-6 text text_type_main-medium">
-                        Восстановление пароля
-                    </h1>
+                    <h1 className="mb-6 text text_type_main-medium">Восстановление пароля</h1>
                     <form className="mb-20" onSubmit={onFormSubmit}>
                         <Input
                             type={show ? "text" : "password"}
@@ -105,13 +103,13 @@ function ResetPassword() {
                             type="text"
                             placeholder="Введите код из письма"
                             onChange={onChange}
-                            value={form.code}
-                            name="code"
-                            error={formErrors.code}
+                            value={form.token}
+                            name="token"
+                            error={formErrors.token}
                             errorText="Поле не должно быть пустым"
                             size="default"
                             extraClass="mb-6"
-                            autoComplete="code"
+                            autoComplete="token"
                         />
                         <Button
                             htmlType="submit"
@@ -123,9 +121,7 @@ function ResetPassword() {
                         </Button>
                     </form>
                     <div className="text_type_main-small">
-                        <span className="text_color_inactive">
-                            Вспомнили пароль?{" "}
-                        </span>
+                        <span className="text_color_inactive">Вспомнили пароль? </span>
                         <Link to="/login" className={styles.link}>
                             Войти
                         </Link>

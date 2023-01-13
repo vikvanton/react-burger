@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, SyntheticEvent } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setAuth, CLEAR_AUTH_ERROR } from "../../services/actions/authActions";
 import { PASS_RESTORATION_END } from "../../services/actions/passRestorationActions";
@@ -7,52 +7,52 @@ import { Link, Redirect, useLocation } from "react-router-dom";
 import ModalOverlay from "../../components/modal-overlay/modal-overlay";
 import Modal from "../../components/modal/modal";
 import InfoMessage from "../../components/info-message/info-message";
-import {
-    Input,
-    Button,
-    InfoIcon,
-} from "@ya.praktikum/react-developer-burger-ui-components";
+import { Location } from "history";
+import { Input, Button, InfoIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import {
     selectAccessToken,
     selectAuthRequest,
     selectAuthError,
 } from "../../services/selectors/authSelectors";
 import { selectRestorationProcess } from "../../services/selectors/passRestorationSelectors";
+import { ILoginForm, TLocationPrevState } from "../../utils/types";
+import { LOGIN } from "../../utils/consts";
 
-function Login() {
-    const [form, setForm] = useState({ email: "", password: "" });
-    const [formErrors, setFormErrors] = useState({
+function Login(): JSX.Element {
+    const [form, setForm] = useState<ILoginForm<string>>({ email: "", password: "" });
+    const [formErrors, setFormErrors] = useState<ILoginForm<boolean>>({
         email: false,
         password: false,
     });
-    const [show, setShow] = useState(false);
-    const accessToken = useSelector(selectAccessToken);
-    const authRequest = useSelector(selectAuthRequest);
-    const authError = useSelector(selectAuthError);
-    const restorationProcess = useSelector(selectRestorationProcess);
-    const dispatch = useDispatch();
-    const location = useLocation();
+    const [show, setShow] = useState<boolean>(false);
+    const accessToken: string = useSelector<any, string>(selectAccessToken);
+    const authRequest: boolean = useSelector<any, boolean>(selectAuthRequest);
+    const authError: string = useSelector<any, string>(selectAuthError);
+    const restorationProcess: boolean = useSelector<any, boolean>(selectRestorationProcess);
+    const dispatch: any = useDispatch<any>();
+    const location: Location<TLocationPrevState> = useLocation<TLocationPrevState>();
 
     useEffect(() => {
         restorationProcess && dispatch({ type: PASS_RESTORATION_END });
     }, [dispatch, restorationProcess]);
 
-    const onChange = (e) => {
-        setFormErrors({ ...formErrors, [e.target.name]: false });
-        setForm({ ...form, [e.target.name]: e.target.value });
+    const onChange = (e: SyntheticEvent): void => {
+        const target: HTMLInputElement = e.target as HTMLInputElement;
+        setFormErrors({ ...formErrors, [target.name]: false });
+        setForm({ ...form, [target.name]: target.value });
     };
 
-    const onIconClick = () => {
+    const onIconClick = (): void => {
         setShow(!show);
     };
 
-    const closeModal = () => {
+    const closeModal = (): void => {
         dispatch({ type: CLEAR_AUTH_ERROR });
     };
 
-    const onFormSubmit = (e) => {
+    const onFormSubmit = (e: SyntheticEvent): void => {
         e.preventDefault();
-        const checkFormValid = {
+        const checkFormValid: ILoginForm<boolean> = {
             email: !form.email,
             password: !form.password,
         };
@@ -60,11 +60,11 @@ function Login() {
             setFormErrors(checkFormValid);
             return;
         }
-        const data = {
+        const data: ILoginForm<string> = {
             email: form.email,
             password: form.password,
         };
-        dispatch(setAuth(data, "login"));
+        dispatch(setAuth(data, LOGIN));
     };
 
     if (accessToken) {
@@ -108,19 +108,12 @@ function Login() {
                         extraClass="mb-6"
                         autoComplete="current-password"
                     />
-                    <Button
-                        htmlType="submit"
-                        type="primary"
-                        size="large"
-                        extraClass={styles.btn}
-                    >
+                    <Button htmlType="submit" type="primary" size="large" extraClass={styles.btn}>
                         Войти
                     </Button>
                 </form>
                 <div className="mb-4 text text_type_main-small">
-                    <span className="text_color_inactive">
-                        Вы новый пользователь?{" "}
-                    </span>
+                    <span className="text_color_inactive">Вы новый пользователь? </span>
                     <Link to="/register" className={styles.link}>
                         Зарегистрироваться
                     </Link>

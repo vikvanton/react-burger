@@ -10,8 +10,8 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import { selectRefreshToken } from "../../services/selectors/authSelectors";
 
-function AppHeader() {
-    const refreshToken = useSelector(selectRefreshToken);
+function AppHeader(): JSX.Element {
+    const refreshToken: string = useSelector<any, string>(selectRefreshToken);
 
     return (
         <header className={styles.header}>
@@ -46,14 +46,13 @@ function AppHeader() {
                             to={refreshToken ? "/profile" : "/login"}
                             className={`${styles.link} text text_type_main-default`}
                             activeClassName={styles.linkSelected}
-                            isActive={(match, location) => {
-                                return (
-                                    match ||
-                                    location.pathname === "/register" ||
-                                    location.pathname === "/forgot-password" ||
-                                    location.pathname === "/reset-password"
-                                );
-                            }}
+                            isActive={(match, location) =>
+                                match?.url === "/profile" ||
+                                location.pathname === "/login" ||
+                                location.pathname === "/register" ||
+                                location.pathname === "/forgot-password" ||
+                                location.pathname === "/reset-password"
+                            }
                         >
                             <ProfileIcon type="secondary" />
                             {refreshToken ? "Личный кабинет" : "Войти"}

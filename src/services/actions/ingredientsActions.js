@@ -15,10 +15,10 @@ export const getIngredients = () => {
             .then((result) => {
                 dispatch({ type: GET_INGREDIENTS_SUCCESS, data: result.data });
             })
-            .catch(() =>
+            .catch((error) =>
                 dispatch({
                     type: GET_INGREDIENTS_ERROR,
-                    data: "Ошибка соединения с сервером",
+                    data: error.message,
                 })
             );
     };

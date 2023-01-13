@@ -18,10 +18,10 @@ export const restorePass = (data) => {
                     });
                 }
             })
-            .catch(() =>
+            .catch((error) =>
                 dispatch({
                     type: PASS_RESTORATION_ERROR,
-                    data: "Ошибка соединения с сервером",
+                    data: error.message,
                 })
             );
     };
@@ -41,11 +41,10 @@ export const resetPass = (data) => {
             .catch((error) =>
                 dispatch({
                     type: PASS_RESTORATION_ERROR,
-                    data: error?.message
-                        ? error.message === "Incorrect reset token"
+                    data:
+                        error.message === "Incorrect reset token"
                             ? "Неверный код восстановления"
-                            : error.message
-                        : "Ошибка соединения с сервером",
+                            : error.message,
                 })
             );
     };

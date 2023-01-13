@@ -4,10 +4,11 @@ import IngredientDetails from "../../components/ingredient-details/ingredient-de
 import InfoMessage from "../../components/info-message/info-message";
 import { InfoIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import { selectIngredient } from "../../services/selectors/ingredientsSelectors";
+import { TIngredient } from "../../utils/types";
 
-function Ingredient() {
-    const { id } = useParams();
-    const ingredient = useSelector(selectIngredient(id));
+function Ingredient(): JSX.Element {
+    const { id } = useParams<{ id: string }>();
+    const ingredient: TIngredient = useSelector<any, TIngredient>(selectIngredient(id));
 
     return (
         <>

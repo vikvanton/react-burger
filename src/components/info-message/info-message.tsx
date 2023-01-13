@@ -1,7 +1,12 @@
 import styles from "./info-message.module.css";
-import PropTypes from "prop-types";
+import { ReactElement } from "react";
 
-function InfoMessage({ text, children }) {
+interface IInfoMessageProps {
+    children: ReactElement;
+    text?: string;
+}
+
+function InfoMessage({ text, children }: IInfoMessageProps): JSX.Element {
     return (
         <section className={`${styles.container} text text_type_main-medium`}>
             {children}
@@ -9,14 +14,5 @@ function InfoMessage({ text, children }) {
         </section>
     );
 }
-
-InfoMessage.propTypes = {
-    text: PropTypes.string,
-    children: PropTypes.element.isRequired,
-};
-
-InfoMessage.defaultProps = {
-    text: "",
-};
 
 export default InfoMessage;

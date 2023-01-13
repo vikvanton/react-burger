@@ -14,14 +14,16 @@ import Profile from "../../pages/profile/profile";
 import ProtectedRoute from "../protected-route/protected-route";
 import NotFound from "../../pages/not-found/not-found";
 import ModalOverlay from "../modal-overlay/modal-overlay";
+import { Location } from "history";
 import { useCheckAuth } from "../../utils/hooks";
 import { selectIngredientsRequest } from "../../services/selectors/ingredientsSelectors";
+import { TLocationBackgState } from "../../utils/types";
 
-function App() {
-    const ingredientsRequest = useSelector(selectIngredientsRequest);
+function App(): JSX.Element {
+    const ingredientsRequest: boolean = useSelector<any, boolean>(selectIngredientsRequest);
     const { checking, checkAuth } = useCheckAuth();
-    const dispatch = useDispatch();
-    const location = useLocation();
+    const dispatch: any = useDispatch<any>();
+    const location: Location<TLocationBackgState> = useLocation<TLocationBackgState>();
     const background = location.state?.background;
 
     useEffect(() => {
@@ -39,19 +41,19 @@ function App() {
                         <Route path="/" exact>
                             <MainPage />
                         </Route>
-                        <Route path="/ingredient/:id">
+                        <Route path="/ingredient/:id" exact>
                             <Ingredient />
                         </Route>
-                        <Route path="/login">
+                        <Route path="/login" exact>
                             <Login />
                         </Route>
-                        <ProtectedRoute path="/register" forUnAuth>
+                        <ProtectedRoute path="/register" exact forUnAuth>
                             <Register />
                         </ProtectedRoute>
-                        <ProtectedRoute path="/forgot-password" forUnAuth>
+                        <ProtectedRoute path="/forgot-password" exact forUnAuth>
                             <ForgotPassword />
                         </ProtectedRoute>
-                        <ProtectedRoute path="/reset-password" forUnAuth>
+                        <ProtectedRoute path="/reset-password" exact forUnAuth>
                             <ResetPassword />
                         </ProtectedRoute>
                         <ProtectedRoute path="/profile">

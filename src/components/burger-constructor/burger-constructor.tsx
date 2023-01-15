@@ -24,11 +24,7 @@ import {
     CLEAR_ORDER_ERROR,
     CLEAR_ORDER_NUMBER,
 } from "../../services/actions/orderActions";
-import {
-    CurrencyIcon,
-    Button,
-    InfoIcon,
-} from "@ya.praktikum/react-developer-burger-ui-components";
+import { CurrencyIcon, Button, InfoIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useDrop } from "react-dnd";
 import { useCheckAuth } from "../../utils/hooks";
 import {
@@ -42,21 +38,26 @@ import {
     selectOrderError,
 } from "../../services/selectors/orderSelectors";
 import { selectAuthRequest } from "../../services/selectors/authSelectors";
+import { TIngredient, TConstructorIngredient, TOrder } from "../../utils/types";
 
-function BurgerConstructor() {
-    const bun = useSelector(selectConstructorBun);
-    const list = useSelector(selectConstructorList);
-    const orderNumber = useSelector(selectOrderNumber);
-    const orderRequest = useSelector(selectOrderRequest);
-    const orderError = useSelector(selectOrderError);
-    const authRequest = useSelector(selectAuthRequest);
-    const totalSum = useSelector(selectTotalSum);
-    const dispatch = useDispatch();
+function BurgerConstructor(): JSX.Element {
+    const bun: TConstructorIngredient = useSelector<any, TConstructorIngredient>(
+        selectConstructorBun
+    );
+    const list: Array<TConstructorIngredient> = useSelector<any, Array<TConstructorIngredient>>(
+        selectConstructorList
+    );
+    const orderNumber: number = useSelector<any, number>(selectOrderNumber);
+    const orderRequest: boolean = useSelector<any, boolean>(selectOrderRequest);
+    const orderError: string = useSelector<any, string>(selectOrderError);
+    const authRequest: boolean = useSelector<any, boolean>(selectAuthRequest);
+    const totalSum: number = useSelector<any, number>(selectTotalSum);
+    const dispatch: any = useDispatch<any>();
     let { checkAuth } = useCheckAuth();
 
     const [{ isDropBunTop }, dropBunTop] = useDrop({
         accept: "bun",
-        drop(item) {
+        drop(item: TIngredient) {
             onDropIngredient(item);
         },
         collect: (monitor) => ({
@@ -66,7 +67,7 @@ function BurgerConstructor() {
 
     const [{ isDropBunBottom }, dropBunBottom] = useDrop({
         accept: "bun",
-        drop(item) {
+        drop(item: TIngredient) {
             onDropIngredient(item);
         },
         collect: (monitor) => ({
@@ -76,7 +77,7 @@ function BurgerConstructor() {
 
     const [{ isDropIngredient }, dropIngredient] = useDrop({
         accept: "ingredient",
-        drop(item) {
+        drop(item: TIngredient) {
             onDropIngredient(item);
         },
         collect: (monitor) => ({
@@ -84,12 +85,15 @@ function BurgerConstructor() {
         }),
     });
 
-    const onDropIngredient = (ingredient) => {
+    const onDropIngredient = (ingredient: TIngredient) => {
         dispatch(addToConstructor(ingredient));
-        dispatch({ type: INC_INGREDIENT_COUNTER, data: ingredient });
+        dispatch({
+            type: INC_INGREDIENT_COUNTER,
+            data: { type: ingredient.type, id: ingredient._id, count: ingredient.count },
+        });
     };
 
-    const closeModal = () => {
+    const closeModal = (): void => {
         if (orderError) dispatch({ type: CLEAR_ORDER_ERROR });
         if (orderNumber) {
             dispatch({ type: CLEAR_ORDER_NUMBER });
@@ -99,14 +103,17 @@ function BurgerConstructor() {
     };
 
     const handleDeleteItem = useCallback(
-        (item) => {
-            dispatch({ type: REMOVE_FROM_CONSTRUCTOR, data: item });
-            dispatch({ type: DEC_INGREDIENT_COUNTER, data: item });
+        (item: TConstructorIngredient): void => {
+            dispatch({ type: REMOVE_FROM_CONSTRUCTOR, data: item.uuid });
+            dispatch({
+                type: DEC_INGREDIENT_COUNTER,
+                data: { type: item.type, id: item._id },
+            });
         },
         [dispatch]
     );
 
-    const handleCreateOrder = () => {
+    const handleCreateOrder = (): void => {
         if (!bun || !list.length) {
             dispatch({
                 type: SET_ORDER_ERROR,
@@ -118,13 +125,13 @@ function BurgerConstructor() {
         // Можно было просто проверить аксесстокен в хранилище и добавить в хедер запроса аксесстокен,
         // но, как я понял, запрос на заказ может выполнятся и без токена, поэтому предварительно
         // проверяем на валидность
-        checkAuth().then((isAuth) => {
+        checkAuth().then((isAuth: boolean): void => {
             // Делаем заказ, если авторизация подтверждена.
             if (isAuth) {
-                const data = {
+                const data: TOrder = {
                     ingredients: [
                         bun._id,
-                        ...list.map((item) => item._id),
+                        ...list.map((item: TConstructorIngredient) => item._id),
                         bun._id,
                     ],
                 };
@@ -141,7 +148,7 @@ function BurgerConstructor() {
     };
 
     const handleDropItem = useCallback(
-        (dragItemId, dropItemId) => {
+        (dragItemId: string, dropItemId: string): void => {
             if (dragItemId === dropItemId) return;
             dispatch({
                 type: EXCHANGE_INGREDIENTS,
@@ -157,16 +164,10 @@ function BurgerConstructor() {
                 <ul className={`${styles.list}`}>
                     <li
                         ref={dropBunTop}
-                        className={`${styles.bun} ${
-                            isDropIngredient && styles.drop
-                        }`}
+                        className={`${styles.bun} ${isDropIngredient && styles.drop}`}
                     >
                         {bun ? (
-                            <BurgerConstructorIngredient
-                                type="top"
-                                isLocked={true}
-                                item={bun}
-                            />
+                            <BurgerConstructorIngredient type="top" isLocked={true} item={bun} />
                         ) : (
                             <BurgerConstructorIngredientEmpty type="top" />
                         )}
@@ -178,7 +179,7 @@ function BurgerConstructor() {
                         } custom-scroll mr-8`}
                     >
                         {list.length ? (
-                            list.map((item) => (
+                            list.map((item: TConstructorIngredient) => (
                                 <BurgerConstructorIngredient
                                     key={item.uuid}
                                     item={item}
@@ -192,16 +193,10 @@ function BurgerConstructor() {
                     </ul>
                     <li
                         ref={dropBunBottom}
-                        className={`${styles.bun} ${
-                            isDropIngredient && styles.drop
-                        }`}
+                        className={`${styles.bun} ${isDropIngredient && styles.drop}`}
                     >
                         {bun ? (
-                            <BurgerConstructorIngredient
-                                type="bottom"
-                                isLocked={true}
-                                item={bun}
-                            />
+                            <BurgerConstructorIngredient type="bottom" isLocked={true} item={bun} />
                         ) : (
                             <BurgerConstructorIngredientEmpty type="bottom" />
                         )}
@@ -210,9 +205,7 @@ function BurgerConstructor() {
                 {totalSum ? (
                     <span className={`${styles.summary} mt-10`}>
                         <span className={`${styles.text} mr-10`}>
-                            <span className="text text_type_digits-medium pr-2">
-                                {totalSum}
-                            </span>
+                            <span className="text text_type_digits-medium pr-2">{totalSum}</span>
                             <CurrencyIcon type="primary" />
                         </span>
                         <Button

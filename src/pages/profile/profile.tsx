@@ -7,11 +7,11 @@ import NotFound from "../not-found/not-found";
 import ProfileForm from "../../components/profile-form/profile-form";
 import { selectRefreshToken } from "../../services/selectors/authSelectors";
 
-const Profile = () => {
-    const refreshToken = useSelector(selectRefreshToken);
-    const dispatch = useDispatch();
+function Profile(): JSX.Element {
+    const refreshToken: string = useSelector<any, string>(selectRefreshToken);
+    const dispatch: any = useDispatch<any>();
 
-    const onLogout = () => {
+    const onLogout = (): void => {
         dispatch(clearAuth({ token: refreshToken }));
     };
 
@@ -47,8 +47,7 @@ const Profile = () => {
                         </li>
                     </ul>
                     <p className="text text_type_main-default text_color_inactive">
-                        В этом разделе вы можете изменить свои персональные
-                        данные
+                        В этом разделе вы можете изменить свои персональные данные
                     </p>
                 </nav>
                 <Switch>
@@ -62,6 +61,6 @@ const Profile = () => {
             </section>
         </>
     );
-};
+}
 
 export default Profile;

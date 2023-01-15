@@ -1,53 +1,47 @@
-import { useState } from "react";
+import { SyntheticEvent, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setAuth, CLEAR_AUTH_ERROR } from "../../services/actions/authActions";
 import styles from "./register.module.css";
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import ModalOverlay from "../../components/modal-overlay/modal-overlay";
 import Modal from "../../components/modal/modal";
 import InfoMessage from "../../components/info-message/info-message";
-import {
-    Input,
-    Button,
-    InfoIcon,
-} from "@ya.praktikum/react-developer-burger-ui-components";
-import {
-    selectAuthRequest,
-    selectAuthError,
-} from "../../services/selectors/authSelectors";
+import { Input, Button, InfoIcon } from "@ya.praktikum/react-developer-burger-ui-components";
+import { selectAuthRequest, selectAuthError } from "../../services/selectors/authSelectors";
+import { REGISTER } from "../../utils/consts";
+import { IRegisterForm } from "../../utils/types";
 
-function Register() {
-    const [form, setForm] = useState({ name: "", email: "", password: "" });
-    const [formErrors, setFormErrors] = useState({
+function Register(): JSX.Element {
+    const [form, setForm] = useState<IRegisterForm<string>>({ name: "", email: "", password: "" });
+    const [formErrors, setFormErrors] = useState<IRegisterForm<boolean>>({
         name: false,
         email: false,
         password: false,
     });
-    const [show, setShow] = useState(false);
-    const authRequest = useSelector(selectAuthRequest);
-    const authError = useSelector(selectAuthError);
-    const dispatch = useDispatch();
+    const [show, setShow] = useState<boolean>(false);
+    const authRequest: boolean = useSelector<any, boolean>(selectAuthRequest);
+    const authError: string = useSelector<any, string>(selectAuthError);
+    const dispatch: any = useDispatch<any>();
 
-    const onChange = (e) => {
-        setFormErrors({ ...formErrors, [e.target.name]: false });
-        setForm({ ...form, [e.target.name]: e.target.value });
+    const onChange = (e: SyntheticEvent): void => {
+        const target = e.target as HTMLInputElement;
+        setFormErrors({ ...formErrors, [target.name]: false });
+        setForm({ ...form, [target.name]: target.value });
     };
 
-    const onIconClick = () => {
+    const onIconClick = (): void => {
         setShow(!show);
     };
 
-    const closeModal = () => {
+    const closeModal = (): void => {
         dispatch({ type: CLEAR_AUTH_ERROR });
     };
 
-    const onFormSubmit = (e) => {
+    const onFormSubmit = (e: SyntheticEvent): void => {
         e.preventDefault();
-        const noValidPass =
-            !form.password ||
-            form.password.length < 6 ||
-            form.password.length > 15;
-        const checkFormValid = {
+        const noValidPass: boolean =
+            !form.password || form.password.length < 6 || form.password.length > 15;
+        const checkFormValid: IRegisterForm<boolean> = {
             name: !form.name,
             email: !form.email,
             password: noValidPass,
@@ -56,12 +50,12 @@ function Register() {
             setFormErrors(checkFormValid);
             return;
         }
-        const data = {
+        const data: IRegisterForm<string> = {
             name: form.name,
             email: form.email,
             password: form.password,
         };
-        dispatch(setAuth(data, "register"));
+        dispatch(setAuth(data, REGISTER));
     };
 
     return (
@@ -107,19 +101,12 @@ function Register() {
                         extraClass="mb-6"
                         autoComplete="new-password"
                     />
-                    <Button
-                        htmlType="submit"
-                        type="primary"
-                        size="large"
-                        extraClass={styles.btn}
-                    >
+                    <Button htmlType="submit" type="primary" size="large" extraClass={styles.btn}>
                         Зарегистрироваться
                     </Button>
                 </form>
                 <div className="text_type_main-small">
-                    <span className="text_color_inactive">
-                        Уже зарегистрированы?{" "}
-                    </span>
+                    <span className="text_color_inactive">Уже зарегистрированы? </span>
                     <Link to="/login" className={styles.link}>
                         Войти
                     </Link>

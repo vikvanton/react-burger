@@ -1,16 +1,29 @@
 import { Redirect, Route } from "react-router-dom";
-import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
 import { selectAccessToken } from "../../services/selectors/authSelectors";
+import { ReactElement } from "react";
 
-function ProtectedRoute({ children, path, forUnAuth }) {
-    const accessToken = useSelector(selectAccessToken);
+interface IProtectedRouteProps {
+    children: ReactElement;
+    path: string;
+    exact?: boolean;
+    forUnAuth?: boolean;
+}
+
+function ProtectedRoute({
+    children,
+    path,
+    exact = false,
+    forUnAuth = false,
+}: IProtectedRouteProps): JSX.Element {
+    const accessToken: string = useSelector<any, string>(selectAccessToken);
 
     if (forUnAuth)
         return (
             <Route
                 path={path}
                 render={() => (accessToken ? <Redirect to="/" /> : children)}
+                exact={exact}
             />
         );
     else
@@ -29,18 +42,9 @@ function ProtectedRoute({ children, path, forUnAuth }) {
                         />
                     )
                 }
+                exact={exact}
             />
         );
 }
-
-ProtectedRoute.propTypes = {
-    children: PropTypes.element.isRequired,
-    path: PropTypes.string.isRequired,
-    forUnAuth: PropTypes.bool,
-};
-
-ProtectedRoute.defaultProps = {
-    forUnAuth: false,
-};
 
 export default ProtectedRoute;

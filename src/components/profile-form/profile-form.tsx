@@ -1,87 +1,80 @@
-import { useState, useRef } from "react";
+import { useState, useRef, SyntheticEvent, RefObject } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styles from "./profile-form.module.css";
-import ModalOverlay from "../../components/modal-overlay/modal-overlay";
-import Modal from "../../components/modal/modal";
-import InfoMessage from "../../components/info-message/info-message";
-import {
-    patchUser,
-    CLEAR_AUTH_ERROR,
-} from "../../services/actions/authActions";
-import {
-    Input,
-    Button,
-    InfoIcon,
-} from "@ya.praktikum/react-developer-burger-ui-components";
+import ModalOverlay from "../modal-overlay/modal-overlay";
+import Modal from "../modal/modal";
+import InfoMessage from "../info-message/info-message";
+import { patchUser, CLEAR_AUTH_ERROR } from "../../services/actions/authActions";
+import { Input, Button, InfoIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import {
     selectName,
     selectEmail,
     selectAuthRequest,
     selectAuthError,
 } from "../../services/selectors/authSelectors";
+import { IRegisterForm } from "../../utils/types";
 
-function ProfileForm() {
-    const name = useSelector(selectName);
-    const email = useSelector(selectEmail);
-    const authRequest = useSelector(selectAuthRequest);
-    const authError = useSelector(selectAuthError);
-    const dispatch = useDispatch();
-    const initialFormData = {
+function ProfileForm(): JSX.Element {
+    const name: string = useSelector<any, string>(selectName);
+    const email: string = useSelector<any, string>(selectEmail);
+    const authRequest: boolean = useSelector<any, boolean>(selectAuthRequest);
+    const authError: string = useSelector<any, string>(selectAuthError);
+    const dispatch: any = useDispatch<any>();
+    const initialFormData: IRegisterForm<string> = {
         name,
         email,
         password: "",
     };
-    const initialFormErrors = {
+    const initialFormErrors: IRegisterForm<boolean> = {
         name: false,
         email: false,
         password: false,
     };
-    const [formChanging, setFormChanging] = useState(false);
-    const [form, setForm] = useState(initialFormData);
-    const [formErrors, setFormErrors] = useState(initialFormErrors);
-    const [show, setShow] = useState(false);
-    const nameRef = useRef();
-    const emailRef = useRef();
-    const passwordRef = useRef();
+    const [formChanging, setFormChanging] = useState<boolean>(false);
+    const [form, setForm] = useState<IRegisterForm<string>>(initialFormData);
+    const [formErrors, setFormErrors] = useState<IRegisterForm<boolean>>(initialFormErrors);
+    const [show, setShow] = useState<boolean>(false);
+    const nameRef: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
+    const emailRef: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
+    const passwordRef: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
 
-    const onNameEditIconClick = () => {
+    const onNameEditIconClick = (): void => {
         setFormChanging(true);
-        setTimeout(() => nameRef.current.focus(), 0);
+        setTimeout(() => nameRef.current?.focus(), 0);
     };
 
-    const onEmailEditIconClick = () => {
+    const onEmailEditIconClick = (): void => {
         setFormChanging(true);
-        setTimeout(() => emailRef.current.focus(), 0);
+        setTimeout(() => emailRef.current?.focus(), 0);
     };
 
-    const onPasswordEditIconClick = () => {
+    const onPasswordEditIconClick = (): void => {
         setFormChanging(true);
-        setTimeout(() => passwordRef.current.focus(), 0);
+        setTimeout(() => passwordRef.current?.focus(), 0);
     };
 
-    const onChange = (e) => {
-        setFormErrors({ ...formErrors, [e.target.name]: false });
-        setForm({ ...form, [e.target.name]: e.target.value });
+    const onChange = (e: SyntheticEvent): void => {
+        const target = e.target as HTMLInputElement;
+        setFormErrors({ ...formErrors, [target.name]: false });
+        setForm({ ...form, [target.name]: target.value });
     };
 
-    const onShowIconClick = (e) => {
+    const onShowIconClick = (): void => {
         setShow(!show);
     };
 
-    const onFormReset = () => {
+    const onFormReset = (): void => {
         setFormChanging(false);
         setForm(initialFormData);
         setFormErrors(initialFormErrors);
         setShow(false);
     };
 
-    const onFormSubmit = (e) => {
+    const onFormSubmit = (e: SyntheticEvent): void => {
         e.preventDefault();
-        const noValidPass =
-            !form.password ||
-            form.password.length < 6 ||
-            form.password.length > 15;
-        const checkFormValid = {
+        const noValidPass: boolean =
+            !form.password || form.password.length < 6 || form.password.length > 15;
+        const checkFormValid: IRegisterForm<boolean> = {
             name: !form.name,
             email: !form.email,
             password: noValidPass,
@@ -90,7 +83,7 @@ function ProfileForm() {
             setFormErrors(checkFormValid);
             return;
         }
-        const data = {
+        const data: IRegisterForm<string> = {
             name: form.name,
             email: form.email,
             password: form.password,
@@ -98,7 +91,7 @@ function ProfileForm() {
         dispatch(patchUser(data));
     };
 
-    const closeModal = () => {
+    const closeModal = (): void => {
         dispatch({ type: CLEAR_AUTH_ERROR });
     };
 
@@ -142,21 +135,11 @@ function ProfileForm() {
                     placeholder="Пароль"
                     onChange={onChange}
                     disabled={!formChanging}
-                    icon={
-                        !formChanging
-                            ? "EditIcon"
-                            : show
-                            ? "HideIcon"
-                            : "ShowIcon"
-                    }
+                    icon={!formChanging ? "EditIcon" : show ? "HideIcon" : "ShowIcon"}
                     value={form.password}
                     name="password"
                     error={formErrors.password}
-                    onIconClick={
-                        !formChanging
-                            ? onPasswordEditIconClick
-                            : onShowIconClick
-                    }
+                    onIconClick={!formChanging ? onPasswordEditIconClick : onShowIconClick}
                     errorText="Пароль должен содержать от 6 до 15 символов. Введите новый пароль для обновления или старый для подтверждения"
                     size="default"
                     extraClass="mb-6"

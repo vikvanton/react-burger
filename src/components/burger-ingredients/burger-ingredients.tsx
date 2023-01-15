@@ -1,64 +1,59 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, RefObject } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory, Redirect } from "react-router";
 import styles from "./burger-ingredients.module.css";
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 import Modal from "../modal/modal";
+import { History } from "history";
 import IngredientDetails from "../ingredient-details/ingredient-details";
 import BurgerIngredientsCategory from "../burger-ingredients-category/burger-ingredients-category";
 import { useIntersectionObserver } from "../../utils/hooks";
 import { SET_VIEW_INGREDIENT } from "../../services/actions/viewIngredientActions";
 import { selectIngredientInModal } from "../../services/selectors/viewIngredientSelectors";
-import {
-    selectBun,
-    selectMain,
-    selectSauce,
-} from "../../services/selectors/ingredientsSelectors";
+import { TIngredient, TLocationBackgState } from "../../utils/types";
+import { selectBun, selectMain, selectSauce } from "../../services/selectors/ingredientsSelectors";
+import { BUN_TAB, MAIN_TAB, SAUCE_TAB } from "../../utils/consts";
 
-const bunTab = "bun";
-const mainTab = "main";
-const sauceTab = "sauce";
-
-function BurgerIngredients() {
-    const bun = useSelector(selectBun);
-    const main = useSelector(selectMain);
-    const sauce = useSelector(selectSauce);
-    const ingredientInModal = useSelector(selectIngredientInModal);
-    const dispatch = useDispatch();
-    const [current, setCurrent] = useState(bunTab);
-    const bunRef = useRef();
-    const sauceRef = useRef();
-    const mainRef = useRef();
-    const containerRef = useRef();
-    const history = useHistory();
+function BurgerIngredients(): JSX.Element {
+    const bun: Array<TIngredient> = useSelector<any, Array<TIngredient>>(selectBun);
+    const main: Array<TIngredient> = useSelector<any, Array<TIngredient>>(selectMain);
+    const sauce: Array<TIngredient> = useSelector<any, Array<TIngredient>>(selectSauce);
+    const ingredientInModal: TIngredient = useSelector<any, TIngredient>(selectIngredientInModal);
+    const dispatch: any = useDispatch<any>();
+    const [current, setCurrent] = useState<string>(BUN_TAB);
+    const bunRef: RefObject<HTMLElement> = useRef<HTMLElement>(null);
+    const sauceRef: RefObject<HTMLElement> = useRef<HTMLElement>(null);
+    const mainRef: RefObject<HTMLElement> = useRef<HTMLElement>(null);
+    const containerRef: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
+    const history: History<TLocationBackgState> = useHistory<TLocationBackgState>();
 
     useIntersectionObserver(
         containerRef,
         [bunRef, sauceRef, mainRef],
-        [bunTab, sauceTab, mainTab],
+        [BUN_TAB, SAUCE_TAB, MAIN_TAB],
         setCurrent
     );
 
-    const onTabClick = (value) => {
-        let ref;
+    const onTabClick = (value: string): void => {
+        let element: HTMLElement | null = null;
         switch (value) {
-            case bunTab:
-                ref = bunRef;
+            case BUN_TAB:
+                element = bunRef.current;
                 break;
-            case sauceTab:
-                ref = sauceRef;
+            case SAUCE_TAB:
+                element = sauceRef.current;
                 break;
-            case mainTab:
-                ref = mainRef;
+            case MAIN_TAB:
+                element = mainRef.current;
                 break;
             default:
         }
-        ref.current.scrollIntoView({ behavior: "smooth" });
+        element?.scrollIntoView({ behavior: "smooth" });
         setCurrent(value);
     };
 
     const openModal = useCallback(
-        (ingredient) => {
+        (ingredient: TIngredient): void => {
             dispatch({ type: SET_VIEW_INGREDIENT, data: ingredient });
             history.push({
                 pathname: `/ingredient/${ingredient._id}`,
@@ -68,43 +63,26 @@ function BurgerIngredients() {
         [dispatch, history]
     );
 
-    const closeModal = () => {
+    const closeModal = (): void => {
         history.goBack();
     };
 
     return (
         <>
             <section className={`${styles.section} ml-5 mr-5`}>
-                <h1 className={`text text_type_main-large mt-10 mb-5`}>
-                    Соберите бургер
-                </h1>
+                <h1 className={`text text_type_main-large mt-10 mb-5`}>Соберите бургер</h1>
                 <div className={`${styles.tabs} mb-10`}>
-                    <Tab
-                        value={bunTab}
-                        active={current === bunTab}
-                        onClick={onTabClick}
-                    >
+                    <Tab value={BUN_TAB} active={current === BUN_TAB} onClick={onTabClick}>
                         Булки
                     </Tab>
-                    <Tab
-                        value={sauceTab}
-                        active={current === sauceTab}
-                        onClick={onTabClick}
-                    >
+                    <Tab value={SAUCE_TAB} active={current === SAUCE_TAB} onClick={onTabClick}>
                         Соусы
                     </Tab>
-                    <Tab
-                        value={mainTab}
-                        active={current === mainTab}
-                        onClick={onTabClick}
-                    >
+                    <Tab value={MAIN_TAB} active={current === MAIN_TAB} onClick={onTabClick}>
                         Начинки
                     </Tab>
                 </div>
-                <div
-                    ref={containerRef}
-                    className={`${styles.container} custom-scroll`}
-                >
+                <div ref={containerRef} className={`${styles.container} custom-scroll`}>
                     <BurgerIngredientsCategory
                         ingredients={bun}
                         name="Булки"

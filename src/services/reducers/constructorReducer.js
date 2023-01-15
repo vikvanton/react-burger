@@ -36,9 +36,7 @@ export const constructorReducer = (state = initialState, action) => {
         case REMOVE_FROM_CONSTRUCTOR: {
             return {
                 ...state,
-                list: state.list.filter(
-                    (item) => item.uuid !== action.data.uuid
-                ),
+                list: state.list.filter((item) => item.uuid !== action.data),
             };
         }
         // Очистка конструктора после отправки заказа на сервер

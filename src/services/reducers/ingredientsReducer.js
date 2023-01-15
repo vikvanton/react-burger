@@ -75,10 +75,7 @@ export const ingredientsReducer = (state = initialState, action) => {
                     ...state,
                     categories: {
                         ...state.categories,
-                        bun: changeBunCounter(
-                            state.categories.bun,
-                            action.data._id
-                        ),
+                        bun: changeBunCounter(state.categories.bun, action.data.id),
                     },
                 };
                 // Остальные типы ингредиентов
@@ -89,7 +86,7 @@ export const ingredientsReducer = (state = initialState, action) => {
                         ...state.categories,
                         [action.data.type]: changeIngredientCounter(
                             state.categories[action.data.type],
-                            action.data._id,
+                            action.data.id,
                             "+"
                         ),
                     },
@@ -106,7 +103,7 @@ export const ingredientsReducer = (state = initialState, action) => {
                     ...state.categories,
                     [action.data.type]: changeIngredientCounter(
                         state.categories[action.data.type],
-                        action.data._id,
+                        action.data.id,
                         "-"
                     ),
                 },
@@ -124,9 +121,9 @@ export const ingredientsReducer = (state = initialState, action) => {
     }
 };
 // Ф-ция изменения счетчиков ингредиентов при замене булок
-const changeBunCounter = (bun, _id) =>
+const changeBunCounter = (bun, id) =>
     bun.map((item) => {
-        if (item._id === _id) {
+        if (item._id === id) {
             return {
                 ...item,
                 count: item.count + 1,
@@ -141,9 +138,9 @@ const changeBunCounter = (bun, _id) =>
         }
     });
 // Ф-ция изменения счетчика ингредиента при добавлении/удалении в/из конструктор(а)
-const changeIngredientCounter = (ingredients, _id, operation) =>
+const changeIngredientCounter = (ingredients, id, operation) =>
     ingredients.map((item) => {
-        if (item._id === _id) {
+        if (item._id === id) {
             return {
                 ...item,
                 count: operation === "+" ? item.count + 1 : item.count - 1,

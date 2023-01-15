@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { SyntheticEvent, useState } from "react";
 import styles from "./forgot-password.module.css";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, Redirect } from "react-router-dom";
@@ -9,35 +9,31 @@ import {
     restorePass,
     CLEAR_PASS_RESTORATION_ERROR,
 } from "../../services/actions/passRestorationActions";
-import {
-    Input,
-    Button,
-    InfoIcon,
-} from "@ya.praktikum/react-developer-burger-ui-components";
+import { Input, Button, InfoIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import {
     selectRestorationProcess,
     selectPassRestorationRequest,
     selectPassRestorationError,
 } from "../../services/selectors/passRestorationSelectors";
 
-function ForgotPassword() {
-    const [email, setEmail] = useState("");
-    const [emailError, setEmailError] = useState(false);
-    const restorationProcess = useSelector(selectRestorationProcess);
-    const passRestorationRequest = useSelector(selectPassRestorationRequest);
-    const passRestorationError = useSelector(selectPassRestorationError);
-    const dispatch = useDispatch();
+function ForgotPassword(): JSX.Element {
+    const [email, setEmail] = useState<string>("");
+    const [emailError, setEmailError] = useState<boolean>(false);
+    const restorationProcess: boolean = useSelector<any, boolean>(selectRestorationProcess);
+    const passRestorationRequest: boolean = useSelector<any, boolean>(selectPassRestorationRequest);
+    const passRestorationError: string = useSelector<any, string>(selectPassRestorationError);
+    const dispatch: any = useDispatch<any>();
 
-    const closeModal = () => {
+    const closeModal = (): void => {
         dispatch({ type: CLEAR_PASS_RESTORATION_ERROR });
     };
 
-    const onChange = (e) => {
+    const onChange = (e: SyntheticEvent): void => {
         setEmailError(false);
-        setEmail(e.target.value);
+        setEmail((e.target as HTMLInputElement).value);
     };
 
-    const onFormSubmit = (e) => {
+    const onFormSubmit = (e: SyntheticEvent): void => {
         e.preventDefault();
         if (!email) {
             setEmailError(true);
@@ -59,9 +55,7 @@ function ForgotPassword() {
     return (
         <>
             <section className={styles.forgotPass}>
-                <h1 className="mb-6 text text_type_main-medium">
-                    Восстановление пароля
-                </h1>
+                <h1 className="mb-6 text text_type_main-medium">Восстановление пароля</h1>
                 <form className="mb-20" onSubmit={onFormSubmit}>
                     <Input
                         type="email"
@@ -75,19 +69,12 @@ function ForgotPassword() {
                         extraClass="mb-6"
                         autoComplete="email"
                     />
-                    <Button
-                        htmlType="submit"
-                        type="primary"
-                        size="large"
-                        extraClass={styles.btn}
-                    >
+                    <Button htmlType="submit" type="primary" size="large" extraClass={styles.btn}>
                         Восстановить
                     </Button>
                 </form>
                 <div className="text_type_main-small">
-                    <span className="text_color_inactive">
-                        Вспомнили пароль?{" "}
-                    </span>
+                    <span className="text_color_inactive">Вспомнили пароль? </span>
                     <Link to="/login" className={styles.link}>
                         Войти
                     </Link>

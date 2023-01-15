@@ -20,10 +20,10 @@ export const postOrder = (data) => {
                     });
                 }
             })
-            .catch(() =>
+            .catch((error) =>
                 dispatch({
                     type: POST_ORDER_ERROR,
-                    data: "Ошибка соединения с сервером",
+                    data: error.message,
                 })
             );
     };

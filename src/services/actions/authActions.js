@@ -34,14 +34,12 @@ export const setAuth = (data, type) => {
             .catch((error) =>
                 dispatch({
                     type: AUTH_ERROR,
-                    data: error?.message
-                        ? error.message === "User already exists"
+                    data:
+                        error.message === "User already exists"
                             ? "Пользователь с таким e-mail уже существует"
-                            : error.message ===
-                              "email or password are incorrect"
+                            : error.message === "email or password are incorrect"
                             ? "Некорректные e-mail и (или) пароль"
-                            : error.message
-                        : "Ошибка соединения с сервером",
+                            : error.message,
                 })
             );
     };
@@ -56,10 +54,10 @@ export const clearAuth = (data) => {
                     dispatch({ type: CLEAR_AUTH_SUCCESS });
                 }
             })
-            .catch(() =>
+            .catch((error) =>
                 dispatch({
                     type: AUTH_ERROR,
-                    data: "Ошибка соединения с сервером",
+                    data: error.message,
                 })
             );
     };
@@ -87,7 +85,7 @@ export const patchUser = (data) => {
                     } else {
                         dispatch({
                             type: AUTH_ERROR,
-                            data: "Ошибка соединения с сервером",
+                            data: error.message,
                         });
                     }
                 }
@@ -103,14 +101,13 @@ export const patchUser = (data) => {
                             },
                         });
                         // Повторяем запрос с обновленным токеном
-                        return patchUserRequest(
-                            data,
-                            refreshTokens.accessToken
-                        );
+                        return patchUserRequest(data, refreshTokens.accessToken);
                     }
                 },
                 // Если ошибка при обновлении токенов, разлогиниваем пользователя
-                () => dispatch({ type: CLEAR_AUTH_SUCCESS })
+                () => {
+                    dispatch({ type: CLEAR_AUTH_SUCCESS });
+                }
             )
             .then(
                 (result) => {
@@ -122,11 +119,12 @@ export const patchUser = (data) => {
                     }
                 },
                 // Если снова ошибка, останавливаем процесс, чтобы пользователь мог повторить попытку
-                () =>
+                (error) => {
                     dispatch({
                         type: AUTH_ERROR,
-                        data: "Ошибка соединения с сервером",
-                    })
+                        data: error.message,
+                    });
+                }
             );
     };
 };

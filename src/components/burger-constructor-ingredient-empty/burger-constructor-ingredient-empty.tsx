@@ -1,9 +1,15 @@
 import { memo } from "react";
-import PropTypes from "prop-types";
 import styles from "./burger-constructor-ingredient-empty.module.css";
+import { TIngredientType } from "../../utils/types";
 
-function BurgerConstructorIngredientEmpty({ type }) {
-    const element = (
+interface IBurgerConstructorIngredientEmptyProps {
+    type?: TIngredientType;
+}
+
+function BurgerConstructorIngredientEmpty({
+    type,
+}: IBurgerConstructorIngredientEmptyProps): JSX.Element {
+    const element: JSX.Element = (
         <div
             className={`${styles.elementEmpty} ${
                 type ? (type === "top" ? styles.top : styles.bottom) : ""
@@ -19,13 +25,5 @@ function BurgerConstructorIngredientEmpty({ type }) {
         return <li className={`${styles.ingredient}`}>{element}</li>;
     }
 }
-
-BurgerConstructorIngredientEmpty.propTypes = {
-    type: PropTypes.oneOf(["top", "bottom"]),
-};
-
-BurgerConstructorIngredientEmpty.defaultProps = {
-    type: undefined,
-};
 
 export default memo(BurgerConstructorIngredientEmpty);

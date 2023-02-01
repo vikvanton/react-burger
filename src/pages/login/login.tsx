@@ -1,5 +1,5 @@
 import { useState, useEffect, SyntheticEvent } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../utils/hooks";
 import { setAuth, CLEAR_AUTH_ERROR } from "../../services/actions/authActions";
 import { PASS_RESTORATION_END } from "../../services/actions/passRestorationActions";
 import styles from "./login.module.css";
@@ -7,7 +7,6 @@ import { Link, Redirect, useLocation } from "react-router-dom";
 import ModalOverlay from "../../components/modal-overlay/modal-overlay";
 import Modal from "../../components/modal/modal";
 import InfoMessage from "../../components/info-message/info-message";
-import { Location } from "history";
 import { Input, Button, InfoIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import {
     selectAccessToken,
@@ -15,7 +14,7 @@ import {
     selectAuthError,
 } from "../../services/selectors/authSelectors";
 import { selectRestorationProcess } from "../../services/selectors/passRestorationSelectors";
-import { ILoginForm, TLocationPrevState } from "../../utils/types";
+import { ILoginForm, TAuth, TLocationPrevState } from "../../utils/types";
 import { LOGIN } from "../../utils/consts";
 
 function Login(): JSX.Element {
@@ -25,19 +24,19 @@ function Login(): JSX.Element {
         password: false,
     });
     const [show, setShow] = useState<boolean>(false);
-    const accessToken: string = useSelector<any, string>(selectAccessToken);
-    const authRequest: boolean = useSelector<any, boolean>(selectAuthRequest);
-    const authError: string = useSelector<any, string>(selectAuthError);
-    const restorationProcess: boolean = useSelector<any, boolean>(selectRestorationProcess);
-    const dispatch: any = useDispatch<any>();
-    const location: Location<TLocationPrevState> = useLocation<TLocationPrevState>();
+    const accessToken = useAppSelector(selectAccessToken);
+    const authRequest = useAppSelector(selectAuthRequest);
+    const authError = useAppSelector(selectAuthError);
+    const restorationProcess = useAppSelector(selectRestorationProcess);
+    const dispatch = useAppDispatch();
+    const location = useLocation<TLocationPrevState>();
 
     useEffect(() => {
         restorationProcess && dispatch({ type: PASS_RESTORATION_END });
     }, [dispatch, restorationProcess]);
 
     const onChange = (e: SyntheticEvent): void => {
-        const target: HTMLInputElement = e.target as HTMLInputElement;
+        const target = e.target as HTMLInputElement;
         setFormErrors({ ...formErrors, [target.name]: false });
         setForm({ ...form, [target.name]: target.value });
     };
@@ -60,7 +59,7 @@ function Login(): JSX.Element {
             setFormErrors(checkFormValid);
             return;
         }
-        const data: ILoginForm<string> = {
+        const data: TAuth = {
             email: form.email,
             password: form.password,
         };

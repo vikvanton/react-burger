@@ -1,5 +1,5 @@
 import { useState, useRef, SyntheticEvent, RefObject } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../utils/hooks";
 import styles from "./profile-form.module.css";
 import ModalOverlay from "../modal-overlay/modal-overlay";
 import Modal from "../modal/modal";
@@ -15,11 +15,11 @@ import {
 import { IRegisterForm } from "../../utils/types";
 
 function ProfileForm(): JSX.Element {
-    const name: string = useSelector<any, string>(selectName);
-    const email: string = useSelector<any, string>(selectEmail);
-    const authRequest: boolean = useSelector<any, boolean>(selectAuthRequest);
-    const authError: string = useSelector<any, string>(selectAuthError);
-    const dispatch: any = useDispatch<any>();
+    const name = useAppSelector(selectName);
+    const email = useAppSelector(selectEmail);
+    const authRequest = useAppSelector(selectAuthRequest);
+    const authError = useAppSelector(selectAuthError);
+    const dispatch = useAppDispatch();
     const initialFormData: IRegisterForm<string> = {
         name,
         email,
@@ -34,9 +34,9 @@ function ProfileForm(): JSX.Element {
     const [form, setForm] = useState<IRegisterForm<string>>(initialFormData);
     const [formErrors, setFormErrors] = useState<IRegisterForm<boolean>>(initialFormErrors);
     const [show, setShow] = useState<boolean>(false);
-    const nameRef: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
-    const emailRef: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
-    const passwordRef: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
+    const nameRef = useRef<HTMLInputElement>(null);
+    const emailRef = useRef<HTMLInputElement>(null);
+    const passwordRef = useRef<HTMLInputElement>(null);
 
     const onNameEditIconClick = (): void => {
         setFormChanging(true);

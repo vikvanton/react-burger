@@ -1,14 +1,13 @@
 import { useParams } from "react-router";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../../utils/hooks";
 import IngredientDetails from "../../components/ingredient-details/ingredient-details";
 import InfoMessage from "../../components/info-message/info-message";
 import { InfoIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import { selectIngredient } from "../../services/selectors/ingredientsSelectors";
-import { TIngredient } from "../../utils/types";
 
 function Ingredient(): JSX.Element {
     const { id } = useParams<{ id: string }>();
-    const ingredient: TIngredient = useSelector<any, TIngredient>(selectIngredient(id));
+    const ingredient = useAppSelector(selectIngredient(id));
 
     return (
         <>

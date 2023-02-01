@@ -1,6 +1,5 @@
 .profile {
     position: relative;
-    text-align: center;
     width: 480px;
 }
 
@@ -19,7 +18,8 @@
     transition: all 0.5s ease;
 }
 
-.link:hover, .linkSelected {
+.link:hover,
+.linkSelected {
     color: var(--text-primary-color);
 }
 
@@ -31,7 +31,7 @@
     flex-direction: column;
     gap: 80px;
     position: absolute;
-    left: -380px
+    left: -380px;
 }
 
 .nav > ul {

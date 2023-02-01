@@ -1,15 +1,19 @@
 import styles from "./profile.module.css";
-import { useSelector, useDispatch } from "react-redux";
-import { Switch, Route } from "react-router";
+import { useAppDispatch, useAppSelector } from "../../utils/hooks";
+import { Switch, Route, useLocation } from "react-router";
 import { NavLink } from "react-router-dom";
 import { clearAuth } from "../../services/actions/authActions";
+import ProfileOrders from "../../components/profile-orders/profile-orders";
 import NotFound from "../not-found/not-found";
 import ProfileForm from "../../components/profile-form/profile-form";
 import { selectRefreshToken } from "../../services/selectors/authSelectors";
+import { TLocationBackgState } from "../../utils/types";
 
 function Profile(): JSX.Element {
-    const refreshToken: string = useSelector<any, string>(selectRefreshToken);
-    const dispatch: any = useDispatch<any>();
+    const refreshToken = useAppSelector(selectRefreshToken);
+    const dispatch = useAppDispatch();
+    const location = useLocation<TLocationBackgState>();
+    const background = location.state?.background;
 
     const onLogout = (): void => {
         dispatch(clearAuth({ token: refreshToken }));
@@ -50,9 +54,12 @@ function Profile(): JSX.Element {
                         В этом разделе вы можете изменить свои персональные данные
                     </p>
                 </nav>
-                <Switch>
+                <Switch location={background || location}>
                     <Route path="/profile" exact>
                         <ProfileForm />
+                    </Route>
+                    <Route path="/profile/orders" exact>
+                        <ProfileOrders />
                     </Route>
                     <Route>
                         <NotFound />

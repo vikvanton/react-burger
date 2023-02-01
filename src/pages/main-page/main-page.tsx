@@ -1,5 +1,5 @@
 import styles from "./main-page.module.css";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../../utils/hooks";
 import BurgerIngredients from "../../components/burger-ingredients/burger-ingredients";
 import BurgerConstructor from "../../components/burger-constructor/burger-constructor";
 import InfoMessage from "../../components/info-message/info-message";
@@ -9,7 +9,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { selectIngredientsError } from "../../services/selectors/ingredientsSelectors";
 
 function MainPage(): JSX.Element {
-    const ingredientsError: string = useSelector<any, string>(selectIngredientsError);
+    const ingredientsError = useAppSelector(selectIngredientsError);
 
     return (
         <>

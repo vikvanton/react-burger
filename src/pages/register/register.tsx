@@ -1,5 +1,5 @@
 import { SyntheticEvent, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../utils/hooks";
 import { setAuth, CLEAR_AUTH_ERROR } from "../../services/actions/authActions";
 import styles from "./register.module.css";
 import { Link } from "react-router-dom";
@@ -9,7 +9,7 @@ import InfoMessage from "../../components/info-message/info-message";
 import { Input, Button, InfoIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import { selectAuthRequest, selectAuthError } from "../../services/selectors/authSelectors";
 import { REGISTER } from "../../utils/consts";
-import { IRegisterForm } from "../../utils/types";
+import { IRegisterForm, TAuth } from "../../utils/types";
 
 function Register(): JSX.Element {
     const [form, setForm] = useState<IRegisterForm<string>>({ name: "", email: "", password: "" });
@@ -19,9 +19,9 @@ function Register(): JSX.Element {
         password: false,
     });
     const [show, setShow] = useState<boolean>(false);
-    const authRequest: boolean = useSelector<any, boolean>(selectAuthRequest);
-    const authError: string = useSelector<any, string>(selectAuthError);
-    const dispatch: any = useDispatch<any>();
+    const authRequest = useAppSelector(selectAuthRequest);
+    const authError = useAppSelector(selectAuthError);
+    const dispatch = useAppDispatch();
 
     const onChange = (e: SyntheticEvent): void => {
         const target = e.target as HTMLInputElement;
@@ -50,7 +50,7 @@ function Register(): JSX.Element {
             setFormErrors(checkFormValid);
             return;
         }
-        const data: IRegisterForm<string> = {
+        const data: TAuth = {
             name: form.name,
             email: form.email,
             password: form.password,

@@ -1,6 +1,6 @@
 import { SyntheticEvent, useState } from "react";
 import styles from "./forgot-password.module.css";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../utils/hooks";
 import { Link, Redirect } from "react-router-dom";
 import ModalOverlay from "../../components/modal-overlay/modal-overlay";
 import Modal from "../../components/modal/modal";
@@ -19,10 +19,10 @@ import {
 function ForgotPassword(): JSX.Element {
     const [email, setEmail] = useState<string>("");
     const [emailError, setEmailError] = useState<boolean>(false);
-    const restorationProcess: boolean = useSelector<any, boolean>(selectRestorationProcess);
-    const passRestorationRequest: boolean = useSelector<any, boolean>(selectPassRestorationRequest);
-    const passRestorationError: string = useSelector<any, string>(selectPassRestorationError);
-    const dispatch: any = useDispatch<any>();
+    const restorationProcess = useAppSelector(selectRestorationProcess);
+    const passRestorationRequest = useAppSelector(selectPassRestorationRequest);
+    const passRestorationError = useAppSelector(selectPassRestorationError);
+    const dispatch = useAppDispatch();
 
     const closeModal = (): void => {
         dispatch({ type: CLEAR_PASS_RESTORATION_ERROR });

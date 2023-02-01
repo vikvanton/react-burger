@@ -1,5 +1,5 @@
 import { Redirect, Route } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../../utils/hooks";
 import { selectAccessToken } from "../../services/selectors/authSelectors";
 import { ReactElement } from "react";
 
@@ -16,7 +16,7 @@ function ProtectedRoute({
     exact = false,
     forUnAuth = false,
 }: IProtectedRouteProps): JSX.Element {
-    const accessToken: string = useSelector<any, string>(selectAccessToken);
+    const accessToken = useAppSelector(selectAccessToken);
 
     if (forUnAuth)
         return (

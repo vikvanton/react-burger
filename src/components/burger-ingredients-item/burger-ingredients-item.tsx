@@ -2,21 +2,22 @@ import { memo } from "react";
 import styles from "./burger-ingredients-item.module.css";
 import { CurrencyIcon, Counter } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useDrag } from "react-dnd";
-import { TIngredient } from "../../utils/types";
+import { TIngredient, TOpenModalFunc } from "../../utils/types";
+import { SET_VIEW_INGREDIENT } from "../../services/actions/viewInModalActions";
 
 interface IBurgerIngredientsItemProps {
     ingredient: TIngredient;
-    callback: (ingredient: TIngredient) => void;
+    callback: TOpenModalFunc;
 }
 
 function BurgerIngredientsItem({ ingredient, callback }: IBurgerIngredientsItemProps): JSX.Element {
-    const [, dragRef, previewRef] = useDrag({
+    const [, dragRef] = useDrag({
         type: `${ingredient.type === "bun" ? "bun" : "ingredient"}`,
         item: ingredient,
     });
 
     const onClickHandler = (): void => {
-        callback(ingredient);
+        callback({ type: SET_VIEW_INGREDIENT, data: ingredient }, `/ingredient/${ingredient._id}`);
     };
 
     return (

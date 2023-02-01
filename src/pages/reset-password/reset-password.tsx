@@ -1,7 +1,6 @@
 import { SyntheticEvent, useState } from "react";
 import styles from "./reset-password.module.css";
-import { History } from "history";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../utils/hooks";
 import { Link, Redirect, useHistory } from "react-router-dom";
 import ModalOverlay from "../../components/modal-overlay/modal-overlay";
 import Modal from "../../components/modal/modal";
@@ -26,18 +25,18 @@ import {
 } from "../../services/selectors/passRestorationSelectors";
 
 function ResetPassword(): JSX.Element {
-    const history: History<TLocationPrevState> = useHistory<TLocationPrevState>();
+    const history = useHistory<TLocationPrevState>();
     const [form, setForm] = useState<TResetPassForm<string>>({ password: "", token: "" });
     const [formErrors, setFormErrors] = useState<TResetPassForm<boolean>>({
         password: false,
         token: false,
     });
-    const [show, setShow] = useState(false);
-    const restorationProcess: boolean = useSelector<any, boolean>(selectRestorationProcess);
-    const restorationComplete: boolean = useSelector<any, boolean>(selectRestorationComplete);
-    const passRestorationRequest: boolean = useSelector<any, boolean>(selectPassRestorationRequest);
-    const passRestorationError: string = useSelector<any, string>(selectPassRestorationError);
-    const dispatch: any = useDispatch<any>();
+    const [show, setShow] = useState<boolean>(false);
+    const restorationProcess = useAppSelector(selectRestorationProcess);
+    const restorationComplete = useAppSelector(selectRestorationComplete);
+    const passRestorationRequest = useAppSelector(selectPassRestorationRequest);
+    const passRestorationError = useAppSelector(selectPassRestorationError);
+    const dispatch = useAppDispatch();
 
     const onChange = (e: SyntheticEvent): void => {
         const target = e.target as HTMLInputElement;

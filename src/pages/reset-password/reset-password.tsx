@@ -1,4 +1,4 @@
-import { SyntheticEvent, useState } from "react";
+import { ChangeEvent, FormEvent, SyntheticEvent, useState } from "react";
 import styles from "./reset-password.module.css";
 import { useAppDispatch, useAppSelector } from "../../utils/hooks";
 import { Link, Redirect, useHistory } from "react-router-dom";
@@ -38,10 +38,9 @@ function ResetPassword(): JSX.Element {
     const passRestorationError = useAppSelector(selectPassRestorationError);
     const dispatch = useAppDispatch();
 
-    const onChange = (e: SyntheticEvent): void => {
-        const target = e.target as HTMLInputElement;
-        setFormErrors({ ...formErrors, [target.name]: false });
-        setForm({ ...form, [target.name]: target.value });
+    const onChange = (e: ChangeEvent<HTMLInputElement>): void => {
+        setFormErrors({ ...formErrors, [e.target.name]: false });
+        setForm({ ...form, [e.target.name]: e.target.value });
     };
 
     const closeModal = (): void => {
@@ -59,7 +58,7 @@ function ResetPassword(): JSX.Element {
         setShow(!show);
     };
 
-    const onFormSubmit = (e: SyntheticEvent): void => {
+    const onFormSubmit = (e: FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
         const noValidPass: boolean =
             !form.password || form.password.length < 6 || form.password.length > 15;

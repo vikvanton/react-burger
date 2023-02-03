@@ -18,7 +18,7 @@ import { useCheckAuth } from "../../utils/hooks";
 import { selectIngredientsRequest } from "../../services/selectors/ingredientsSelectors";
 import { TLocationBackgState } from "../../utils/types";
 import { useAppDispatch, useAppSelector } from "../../utils/hooks";
-import Order from "../../pages/order/order/order";
+import Order from "../../pages/order/order";
 import ModalManager from "../modal-manager/modal-manager";
 
 function App(): JSX.Element {

@@ -1,4 +1,4 @@
-import { SyntheticEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../utils/hooks";
 import { setAuth, CLEAR_AUTH_ERROR } from "../../services/actions/authActions";
 import styles from "./register.module.css";
@@ -23,10 +23,9 @@ function Register(): JSX.Element {
     const authError = useAppSelector(selectAuthError);
     const dispatch = useAppDispatch();
 
-    const onChange = (e: SyntheticEvent): void => {
-        const target = e.target as HTMLInputElement;
-        setFormErrors({ ...formErrors, [target.name]: false });
-        setForm({ ...form, [target.name]: target.value });
+    const onChange = (e: ChangeEvent<HTMLInputElement>): void => {
+        setFormErrors({ ...formErrors, [e.target.name]: false });
+        setForm({ ...form, [e.target.name]: e.target.value });
     };
 
     const onIconClick = (): void => {
@@ -37,7 +36,7 @@ function Register(): JSX.Element {
         dispatch({ type: CLEAR_AUTH_ERROR });
     };
 
-    const onFormSubmit = (e: SyntheticEvent): void => {
+    const onFormSubmit = (e: FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
         const noValidPass: boolean =
             !form.password || form.password.length < 6 || form.password.length > 15;

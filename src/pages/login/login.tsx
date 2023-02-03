@@ -1,4 +1,4 @@
-import { useState, useEffect, SyntheticEvent } from "react";
+import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { useAppDispatch, useAppSelector } from "../../utils/hooks";
 import { setAuth, CLEAR_AUTH_ERROR } from "../../services/actions/authActions";
 import { PASS_RESTORATION_END } from "../../services/actions/passRestorationActions";
@@ -35,10 +35,9 @@ function Login(): JSX.Element {
         restorationProcess && dispatch({ type: PASS_RESTORATION_END });
     }, [dispatch, restorationProcess]);
 
-    const onChange = (e: SyntheticEvent): void => {
-        const target = e.target as HTMLInputElement;
-        setFormErrors({ ...formErrors, [target.name]: false });
-        setForm({ ...form, [target.name]: target.value });
+    const onChange = (e: ChangeEvent<HTMLInputElement>): void => {
+        setFormErrors({ ...formErrors, [e.target.name]: false });
+        setForm({ ...form, [e.target.name]: e.target.value });
     };
 
     const onIconClick = (): void => {
@@ -49,7 +48,7 @@ function Login(): JSX.Element {
         dispatch({ type: CLEAR_AUTH_ERROR });
     };
 
-    const onFormSubmit = (e: SyntheticEvent): void => {
+    const onFormSubmit = (e: FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
         const checkFormValid: ILoginForm<boolean> = {
             email: !form.email,

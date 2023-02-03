@@ -2,9 +2,6 @@
     position: relative;
     width: 272px;
     height: 208px;
-}
-
-.info:hover {
     cursor: pointer;
 }
 

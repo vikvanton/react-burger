@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import styles from "./feed.module.css";
 import { useAppSelector, useAppDispatch } from "../../utils/hooks";
-import { WS_CONNECTION_START, WS_CONNECTION_STOP } from "../../services/actions/ordersActions";
 import InfoMessage from "../../components/info-message/info-message";
 import { InfoIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import {
@@ -11,6 +10,8 @@ import {
 } from "../../services/selectors/ordersSelectors";
 import FeedSummary from "../../components/feed-summary/feed-summary";
 import FeedOrders from "../../components/feed-orders/feed-orders";
+import { WS_ORDERS_CONNECTION_START, WS_ORDERS_CONNECTION_STOP } from "../../utils/consts";
+import { ORDERS_CLEAR_ERROR } from "../../services/actions/ordersActions";
 
 function Feed(): JSX.Element {
     const dispatch = useAppDispatch();
@@ -19,9 +20,10 @@ function Feed(): JSX.Element {
     const socketError = useAppSelector(selectSocketError);
 
     useEffect(() => {
-        dispatch({ type: WS_CONNECTION_START, data: "all" });
+        dispatch({ type: WS_ORDERS_CONNECTION_START, endpoint: "/all" });
         return () => {
-            dispatch({ type: WS_CONNECTION_STOP });
+            dispatch({ type: WS_ORDERS_CONNECTION_STOP });
+            dispatch({ type: ORDERS_CLEAR_ERROR });
         };
     }, [dispatch]);
 

@@ -190,7 +190,32 @@ export interface IRegisterForm<T> extends ILoginForm<T> {
 
 export type TOpenModalFunc = (action: TAppActions, pathname: string) => void;
 
-export type TSocketType = "all" | "user";
+// Тип для сокет-экшена создания соединения
+export interface IWsConnectionStart {
+    readonly type: string;
+    // эндпоинт для открываемого сокета
+    readonly endpoint: string;
+}
+
+// Тип для сокет-экшена окончания сеанса
+export interface IWsConnectionStop {
+    readonly type: string;
+}
+
+export type TWsConnection = IWsConnectionStart | IWsConnectionStop;
+
+// Тип для объекта экшенов, передаваемый в сокет-мидлвар
+export type TWsActions = {
+    // Универсальный экшн для открытия сокет-соединения
+    wsInit: string;
+    // Экшен-креаторы для событий сокета
+    wsOpen: () => TAppActions | TAppThunk;
+    wsError: (error: string) => TAppActions | TAppThunk;
+    wsMessage: (data: string) => TAppActions | TAppThunk;
+    wsClose: () => TAppActions | TAppThunk;
+    // Универсальный экшн для окончания сеанса сокет-соединения
+    wsEnd: string;
+};
 
 export type TAppActions =
     | TAuthActions
@@ -199,7 +224,8 @@ export type TAppActions =
     | TOrderActions
     | TPassRestorationActions
     | TOrdersActions
-    | TViewInModalActions;
+    | TViewInModalActions
+    | TWsConnection;
 
 export type TAppState = ReturnType<typeof store.getState>;
 

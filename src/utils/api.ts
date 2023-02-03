@@ -32,9 +32,9 @@ const checkResponse = <T>(response: Response): Promise<T> => {
           );
 };
 
-// fetch с обновлением токенов
-const fetchWithTokensRefresh = async <R>(
-    url: string,
+// кастомный запрос с обновлением токенов
+const requestWithTokensRefresh = async <R>(
+    endpoint: string,
     method: string,
     data: string,
     accessToken: string,
@@ -42,7 +42,7 @@ const fetchWithTokensRefresh = async <R>(
     dispatch: TAppDispatch
 ): Promise<R> => {
     // Отправляем запрос с токеном авторизации
-    const response = await fetch(url, {
+    const response = await fetch(`${NORMA_API}${endpoint}`, {
         method: method,
         headers: {
             "Content-Type": "application/json",
@@ -69,7 +69,7 @@ const fetchWithTokensRefresh = async <R>(
                     },
                 });
                 // Повторяем запрос с новым токеном
-                const response = await fetch(url, {
+                const response = await fetch(`${NORMA_API}${endpoint}`, {
                     method: method,
                     headers: {
                         "Content-Type": "application/json",
@@ -95,19 +95,24 @@ const fetchWithTokensRefresh = async <R>(
     }
 };
 
-export const getIngredientsRequest = async (): Promise<IIngredientsResponse> => {
-    const response = await fetch(`${NORMA_API}/ingredients`);
-    return checkResponse<IIngredientsResponse>(response);
+// кастомный запрос
+const request = async <T>(endpoint: string, options?: RequestInit): Promise<T> => {
+    const response = await fetch(`${NORMA_API}${endpoint}`, options);
+    return checkResponse<T>(response);
 };
 
-export const postOrderRequest = async (
+export const getIngredientsRequest = (): Promise<IIngredientsResponse> => {
+    return request<IIngredientsResponse>("/ingredients");
+};
+
+export const postOrderRequest = (
     data: TOrder,
     accessToken: string,
     refreshToken: string,
     dispatch: TAppDispatch
 ): Promise<IOrderResponse> => {
-    return fetchWithTokensRefresh<IOrderResponse>(
-        `${NORMA_API}/orders`,
+    return requestWithTokensRefresh<IOrderResponse>(
+        "/orders",
         "POST",
         JSON.stringify(data),
         accessToken,
@@ -116,80 +121,74 @@ export const postOrderRequest = async (
     );
 };
 
-export const setAuthRequest = async (data: TAuth, type: TAuthType): Promise<ISetAuthResponse> => {
-    const response = await fetch(`${NORMA_API}/auth/${type}`, {
+export const setAuthRequest = (data: TAuth, type: TAuthType): Promise<ISetAuthResponse> => {
+    return request<ISetAuthResponse>(`/auth/${type}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
     });
-    return checkResponse<ISetAuthResponse>(response);
 };
 
-export const clearAuthRequest = async (data: TToken): Promise<IResponseMessage> => {
-    const response = await fetch(`${NORMA_API}/auth/logout`, {
+export const clearAuthRequest = (data: TToken): Promise<IResponseMessage> => {
+    return request<IResponseMessage>("/auth/logout", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
     });
-    return checkResponse<IResponseMessage>(response);
 };
 
-export const getUserDataRequest = async (token: string): Promise<IUserDataResponse> => {
-    const response = await fetch(`${NORMA_API}/auth/user`, {
+export const getUserDataRequest = (token: string): Promise<IUserDataResponse> => {
+    return request<IUserDataResponse>("/auth/user", {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
             Authorization: `${token}`,
         },
     });
-    return checkResponse<IUserDataResponse>(response);
 };
 
-export const refreshTokensRequest = async (data: TToken): Promise<IRefreshTokensResponse> => {
-    const response = await fetch(`${NORMA_API}/auth/token`, {
+export const refreshTokensRequest = (data: TToken): Promise<IRefreshTokensResponse> => {
+    return request<IRefreshTokensResponse>("/auth/token", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
     });
-    return checkResponse<IRefreshTokensResponse>(response);
 };
 
-export const restorePassRequest = async (data: TEmail): Promise<IResponseMessage> => {
-    const response = await fetch(`${NORMA_API}/password-reset`, {
+export const restorePassRequest = (data: TEmail): Promise<IResponseMessage> => {
+    return request<IResponseMessage>("/password-reset", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
     });
-    return checkResponse<IResponseMessage>(response);
 };
 
-export const resetPassRequest = async (data: TRestorePass): Promise<IResponseMessage> => {
-    const response = await fetch(`${NORMA_API}/password-reset/reset`, {
+export const resetPassRequest = (data: TRestorePass): Promise<IResponseMessage> => {
+    return request<IResponseMessage>("/password-reset/reset", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
     });
-    return checkResponse<IResponseMessage>(response);
 };
 
-export const patchUserRequest = async (
+export const patchUserRequest = (
     data: TAuth,
     accessToken: string,
     refreshToken: string,
     dispatch: TAppDispatch
 ): Promise<IUserDataResponse> => {
-    return fetchWithTokensRefresh<IUserDataResponse>(
-        `${NORMA_API}/auth/user`,
+    return requestWithTokensRefresh<IUserDataResponse>(
+        "/auth/user",
         "PATCH",
         JSON.stringify(data),
         accessToken,

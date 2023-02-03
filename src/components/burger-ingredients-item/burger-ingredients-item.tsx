@@ -22,7 +22,7 @@ function BurgerIngredientsItem({ ingredient, callback }: IBurgerIngredientsItemP
 
     return (
         <>
-            <li className={styles.card}>
+            <li className={styles.card} onClick={onClickHandler}>
                 <div ref={dragRef}>
                     {ingredient.count ? (
                         <Counter count={ingredient.count} size="default" extraClass="m-1" />
@@ -33,7 +33,7 @@ function BurgerIngredientsItem({ ingredient, callback }: IBurgerIngredientsItemP
                         className={`${styles.image} ml-4`}
                     />
                 </div>
-                <div className={styles.info} onClick={onClickHandler}>
+                <div>
                     <p className={`${styles.price} mt-2 mb-2`}>
                         <span className="text text_type_digits-default pr-2">
                             {ingredient.price}

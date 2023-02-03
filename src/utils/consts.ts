@@ -8,3 +8,6 @@ export const SAUCE: "sauce" = "sauce";
 export const REGISTER: TAuthType = "register";
 export const LOGIN: TAuthType = "login";
 export const SOCKET_TOKEN_ERROR: "Invalid or missing token" = "Invalid or missing token";
+export const WS_ORDERS_CONNECTION_START: "WS_ORDERS_CONNECTION_START" =
+    "WS_ORDERS_CONNECTION_START";
+export const WS_ORDERS_CONNECTION_STOP: "WS_ORDERS_CONNECTION_STOP" = "WS_ORDERS_CONNECTION_STOP";

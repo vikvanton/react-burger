@@ -1,10 +1,10 @@
 import { TOrderInfo } from "../../utils/types";
 import {
-    WS_CONNECTION_SUCCESS,
-    WS_ERROR,
-    WS_CLEAR_ERROR,
-    WS_CONNECTION_CLOSED,
-    WS_GET_MESSAGE,
+    ORDERS_CONNECTION_SUCCESS,
+    ORDERS_ERROR,
+    ORDERS_CLEAR_ERROR,
+    ORDERS_CONNECTION_CLOSED,
+    ORDERS_GET_MESSAGE,
     TOrdersActions,
 } from "../actions/ordersActions";
 
@@ -26,27 +26,29 @@ const initialState: TOrdersState = {
 
 export const ordersReducer = (state = initialState, action: TOrdersActions): TOrdersState => {
     switch (action.type) {
-        case WS_CONNECTION_SUCCESS: {
+        case ORDERS_CONNECTION_SUCCESS: {
             return {
                 ...state,
                 socketConnected: true,
                 socketError: "",
             };
         }
-        case WS_ERROR: {
+        case ORDERS_ERROR: {
             return {
                 ...state,
                 socketConnected: false,
                 socketError: action.data,
             };
         }
-        case WS_CLEAR_ERROR: {
-            return {
-                ...state,
-                socketError: "",
-            };
+        case ORDERS_CLEAR_ERROR: {
+            if (state.socketError)
+                return {
+                    ...state,
+                    socketError: "",
+                };
+            else return state;
         }
-        case WS_CONNECTION_CLOSED: {
+        case ORDERS_CONNECTION_CLOSED: {
             return {
                 ...state,
                 orders: [],
@@ -55,7 +57,7 @@ export const ordersReducer = (state = initialState, action: TOrdersActions): TOr
                 socketConnected: false,
             };
         }
-        case WS_GET_MESSAGE: {
+        case ORDERS_GET_MESSAGE: {
             return {
                 ...state,
                 orders: action.data.orders,

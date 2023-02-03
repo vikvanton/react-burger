@@ -1,7 +1,6 @@
 import { useEffect, useMemo } from "react";
 import styles from "./profile-orders.module.css";
 import { useAppSelector, useAppDispatch, useOpenModalFunc } from "../../utils/hooks";
-import { WS_CONNECTION_START, WS_CONNECTION_STOP } from "../../services/actions/ordersActions";
 import InfoMessage from "../info-message/info-message";
 import { InfoIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import {
@@ -12,9 +11,13 @@ import {
 import OrderCard from "../order-card/order-card";
 import { selectCategories } from "../../services/selectors/ingredientsSelectors";
 import { TOrderInfo } from "../../utils/types";
+import { WS_ORDERS_CONNECTION_START, WS_ORDERS_CONNECTION_STOP } from "../../utils/consts";
+import { selectAccessToken } from "../../services/selectors/authSelectors";
+import { ORDERS_CLEAR_ERROR } from "../../services/actions/ordersActions";
 
 function ProfileOrders(): JSX.Element {
     const dispatch = useAppDispatch();
+    const accessToken = useAppSelector(selectAccessToken);
     const orders = useAppSelector(selectOrders);
     const categories = useAppSelector(selectCategories);
     const socketConnected = useAppSelector(selectSocketConnected);
@@ -22,11 +25,12 @@ function ProfileOrders(): JSX.Element {
     const openModal = useOpenModalFunc();
 
     useEffect(() => {
-        dispatch({ type: WS_CONNECTION_START, data: "user" });
+        dispatch({ type: WS_ORDERS_CONNECTION_START, endpoint: `?token=${accessToken.slice(7)}` });
         return () => {
-            dispatch({ type: WS_CONNECTION_STOP });
+            dispatch({ type: WS_ORDERS_CONNECTION_STOP });
+            dispatch({ type: ORDERS_CLEAR_ERROR });
         };
-    }, [dispatch]);
+    }, [accessToken, dispatch]);
 
     const reverseOrders = useMemo((): Array<TOrderInfo> => {
         return [...orders].reverse();

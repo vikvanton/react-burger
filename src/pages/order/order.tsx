@@ -2,21 +2,23 @@ import { useMemo } from "react";
 import { InfoIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useEffect } from "react";
 import { useParams, useRouteMatch } from "react-router";
-import InfoMessage from "../../../components/info-message/info-message";
-import { WS_CONNECTION_START, WS_CONNECTION_STOP } from "../../../services/actions/ordersActions";
-import { selectCategories } from "../../../services/selectors/ingredientsSelectors";
+import InfoMessage from "../../components/info-message/info-message";
+import { ORDERS_CLEAR_ERROR } from "../../services/actions/ordersActions";
+import { selectCategories } from "../../services/selectors/ingredientsSelectors";
 import {
     selectOrder,
     selectOrders,
     selectSocketConnected,
     selectSocketError,
-} from "../../../services/selectors/ordersSelectors";
-import { useAppDispatch, useAppSelector, useOrderData } from "../../../utils/hooks";
-import OrderInfo from "../../../components/order-info/order-info";
-import { TSocketType } from "../../../utils/types";
+} from "../../services/selectors/ordersSelectors";
+import { useAppDispatch, useAppSelector, useOrderData } from "../../utils/hooks";
+import OrderInfo from "../../components/order-info/order-info";
+import { WS_ORDERS_CONNECTION_START, WS_ORDERS_CONNECTION_STOP } from "../../utils/consts";
+import { selectAccessToken } from "../../services/selectors/authSelectors";
 
 function Order() {
     const dispatch = useAppDispatch();
+    const accessToken = useAppSelector(selectAccessToken);
     const categories = useAppSelector(selectCategories);
     const socketConnected = useAppSelector(selectSocketConnected);
     const socketError = useAppSelector(selectSocketError);
@@ -28,12 +30,15 @@ function Order() {
     const { path } = useRouteMatch();
 
     useEffect(() => {
-        const type: TSocketType = path === "/profile/orders/:id" ? "user" : "all";
-        dispatch({ type: WS_CONNECTION_START, data: type });
+        dispatch({
+            type: WS_ORDERS_CONNECTION_START,
+            endpoint: path === "/profile/orders/:id" ? `?token=${accessToken.slice(7)}` : "/all",
+        });
         return () => {
-            dispatch({ type: WS_CONNECTION_STOP });
+            dispatch({ type: WS_ORDERS_CONNECTION_STOP });
+            dispatch({ type: ORDERS_CLEAR_ERROR });
         };
-    }, [dispatch, path]);
+    }, [accessToken, dispatch, path]);
 
     if (socketError)
         return (

@@ -1,4 +1,4 @@
-import { useState, useRef, SyntheticEvent, RefObject } from "react";
+import { useState, useRef, SyntheticEvent, FormEvent } from "react";
 import { useAppDispatch, useAppSelector } from "../../utils/hooks";
 import styles from "./profile-form.module.css";
 import ModalOverlay from "../modal-overlay/modal-overlay";
@@ -70,7 +70,7 @@ function ProfileForm(): JSX.Element {
         setShow(false);
     };
 
-    const onFormSubmit = (e: SyntheticEvent): void => {
+    const onFormSubmit = (e: FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
         const noValidPass: boolean =
             !form.password || form.password.length < 6 || form.password.length > 15;

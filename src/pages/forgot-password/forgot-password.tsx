@@ -1,4 +1,4 @@
-import { SyntheticEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import styles from "./forgot-password.module.css";
 import { useAppDispatch, useAppSelector } from "../../utils/hooks";
 import { Link, Redirect } from "react-router-dom";
@@ -28,12 +28,12 @@ function ForgotPassword(): JSX.Element {
         dispatch({ type: CLEAR_PASS_RESTORATION_ERROR });
     };
 
-    const onChange = (e: SyntheticEvent): void => {
+    const onChange = (e: ChangeEvent<HTMLInputElement>): void => {
         setEmailError(false);
-        setEmail((e.target as HTMLInputElement).value);
+        setEmail(e.target.value);
     };
 
-    const onFormSubmit = (e: SyntheticEvent): void => {
+    const onFormSubmit = (e: FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
         if (!email) {
             setEmailError(true);

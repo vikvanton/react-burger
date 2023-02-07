@@ -1,6 +1,6 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { FormEvent } from "react";
 import styles from "./forgot-password.module.css";
-import { useAppDispatch, useAppSelector } from "../../utils/hooks";
+import { useAppDispatch, useAppSelector, useForm } from "../../utils/hooks";
 import { Link, Redirect } from "react-router-dom";
 import ModalOverlay from "../../components/modal-overlay/modal-overlay";
 import Modal from "../../components/modal/modal";
@@ -15,10 +15,11 @@ import {
     selectPassRestorationRequest,
     selectPassRestorationError,
 } from "../../services/selectors/passRestorationSelectors";
+import { TEmail } from "../../utils/types";
+import { INPUT_FIELD_ERROR } from "../../utils/consts";
 
 function ForgotPassword(): JSX.Element {
-    const [email, setEmail] = useState<string>("");
-    const [emailError, setEmailError] = useState<boolean>(false);
+    const { formValues, formErrors, isFormValid, onFieldChange } = useForm<TEmail>({ email: "" });
     const restorationProcess = useAppSelector(selectRestorationProcess);
     const passRestorationRequest = useAppSelector(selectPassRestorationRequest);
     const passRestorationError = useAppSelector(selectPassRestorationError);
@@ -28,18 +29,10 @@ function ForgotPassword(): JSX.Element {
         dispatch({ type: CLEAR_PASS_RESTORATION_ERROR });
     };
 
-    const onChange = (e: ChangeEvent<HTMLInputElement>): void => {
-        setEmailError(false);
-        setEmail(e.target.value);
-    };
-
     const onFormSubmit = (e: FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
-        if (!email) {
-            setEmailError(true);
-            return;
-        }
-        dispatch(restorePass({ email }));
+        if (!isFormValid()) return;
+        dispatch(restorePass(formValues));
     };
 
     if (restorationProcess)
@@ -60,11 +53,11 @@ function ForgotPassword(): JSX.Element {
                     <Input
                         type="email"
                         placeholder="Укажите e-mail"
-                        onChange={onChange}
-                        value={email}
+                        onChange={onFieldChange}
+                        value={formValues.email}
                         name="email"
-                        error={emailError}
-                        errorText="Поле не должно быть пустым"
+                        error={formErrors.email}
+                        errorText={INPUT_FIELD_ERROR}
                         size="default"
                         extraClass="mb-6"
                         autoComplete="email"

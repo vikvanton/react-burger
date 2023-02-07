@@ -4,13 +4,11 @@ import {
     ORDERS_ERROR,
     ORDERS_GET_MESSAGE,
     ORDERS_CONNECTION_CLOSED,
+    WS_ORDERS_CONNECTION_START,
+    WS_ORDERS_CONNECTION_STOP,
 } from "../services/actions/ordersActions";
 import { refreshTokensRequest } from "./api";
-import {
-    WS_ORDERS_CONNECTION_START,
-    SOCKET_TOKEN_ERROR,
-    WS_ORDERS_CONNECTION_STOP,
-} from "./consts";
+import { SOCKET_TOKEN_ERROR } from "./consts";
 import {
     TAppActions,
     TAppThunk,
@@ -18,8 +16,8 @@ import {
     IOrdersResponse,
     IResponseMessage,
     IResponseError,
-    TWsActions,
     TAppDispatch,
+    TWsActions,
 } from "./types";
 
 // Ф-ция получения объекта экшенов сокет-мидлвара для orders
@@ -27,7 +25,7 @@ export function WsOrdersActions(): TWsActions {
     // Флаг попытки обновления токенов
     let refreshTokensAttempt: boolean = false;
     // Ф-ция обработки ошибки при получении неуспешного сообщения
-    const errMessageFunc = (dispatch: TAppDispatch): void => {
+    const errMessage = (dispatch: TAppDispatch): void => {
         dispatch({
             type: ORDERS_ERROR,
             data: "Ошибка получения данных с сервера",
@@ -73,7 +71,7 @@ export function WsOrdersActions(): TWsActions {
                                 dispatch({ type: CLEAR_AUTH_SUCCESS });
                                 return;
                             }
-                            errMessageFunc(dispatch);
+                            errMessage(dispatch);
                         });
                     // Если невалидный токен и было обновление токенов
                     // то разлогиниваем пользователя
@@ -84,7 +82,7 @@ export function WsOrdersActions(): TWsActions {
                     dispatch({ type: CLEAR_AUTH_SUCCESS });
                     refreshTokensAttempt = false;
                 } else {
-                    errMessageFunc(dispatch);
+                    errMessage(dispatch);
                 }
             };
         },

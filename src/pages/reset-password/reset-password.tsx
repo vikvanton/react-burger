@@ -1,11 +1,11 @@
-import { ChangeEvent, FormEvent, SyntheticEvent, useState } from "react";
+import { FormEvent } from "react";
 import styles from "./reset-password.module.css";
-import { useAppDispatch, useAppSelector } from "../../utils/hooks";
+import { useAppDispatch, useAppSelector, useForm, useShowPass } from "../../utils/hooks";
 import { Link, Redirect, useHistory } from "react-router-dom";
 import ModalOverlay from "../../components/modal-overlay/modal-overlay";
 import Modal from "../../components/modal/modal";
 import InfoMessage from "../../components/info-message/info-message";
-import { TLocationPrevState, TResetPassForm } from "../../utils/types";
+import { TLocationPrevState, TRestorePass } from "../../utils/types";
 import {
     resetPass,
     CLEAR_PASS_RESTORATION_ERROR,
@@ -23,25 +23,20 @@ import {
     selectPassRestorationRequest,
     selectPassRestorationError,
 } from "../../services/selectors/passRestorationSelectors";
+import { INPUT_FIELD_ERROR, PASS_FIELD_ERROR } from "../../utils/consts";
 
 function ResetPassword(): JSX.Element {
     const history = useHistory<TLocationPrevState>();
-    const [form, setForm] = useState<TResetPassForm<string>>({ password: "", token: "" });
-    const [formErrors, setFormErrors] = useState<TResetPassForm<boolean>>({
-        password: false,
-        token: false,
+    const { formValues, formErrors, isFormValid, onFieldChange } = useForm<TRestorePass>({
+        password: "",
+        token: "",
     });
-    const [show, setShow] = useState<boolean>(false);
+    const { showPass, onShowPassIconClick } = useShowPass();
     const restorationProcess = useAppSelector(selectRestorationProcess);
     const restorationComplete = useAppSelector(selectRestorationComplete);
     const passRestorationRequest = useAppSelector(selectPassRestorationRequest);
     const passRestorationError = useAppSelector(selectPassRestorationError);
     const dispatch = useAppDispatch();
-
-    const onChange = (e: ChangeEvent<HTMLInputElement>): void => {
-        setFormErrors({ ...formErrors, [e.target.name]: false });
-        setForm({ ...form, [e.target.name]: e.target.value });
-    };
 
     const closeModal = (): void => {
         if (passRestorationError) {
@@ -54,27 +49,10 @@ function ResetPassword(): JSX.Element {
         }
     };
 
-    const onIconClick = (): void => {
-        setShow(!show);
-    };
-
     const onFormSubmit = (e: FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
-        const noValidPass: boolean =
-            !form.password || form.password.length < 6 || form.password.length > 15;
-        const checkFormValid: TResetPassForm<boolean> = {
-            password: noValidPass,
-            token: !form.token,
-        };
-        if (noValidPass || !form.token) {
-            setFormErrors(checkFormValid);
-            return;
-        }
-        const data: TResetPassForm<string> = {
-            password: form.password,
-            token: form.token,
-        };
-        dispatch(resetPass(data));
+        if (!isFormValid()) return;
+        dispatch(resetPass(formValues));
     };
 
     if (history.location.state?.prev === "/forgot-password" && restorationProcess)
@@ -84,15 +62,15 @@ function ResetPassword(): JSX.Element {
                     <h1 className="mb-6 text text_type_main-medium">Восстановление пароля</h1>
                     <form className="mb-20" onSubmit={onFormSubmit}>
                         <Input
-                            type={show ? "text" : "password"}
+                            type={showPass ? "text" : "password"}
                             placeholder="Введите новый пароль"
-                            onChange={onChange}
-                            icon={show ? "HideIcon" : "ShowIcon"}
-                            value={form.password}
+                            onChange={onFieldChange}
+                            icon={showPass ? "HideIcon" : "ShowIcon"}
+                            value={formValues.password}
                             name="password"
                             error={formErrors.password}
-                            onIconClick={onIconClick}
-                            errorText="Пароль должен содержать от 6 до 15 символов."
+                            onIconClick={onShowPassIconClick}
+                            errorText={PASS_FIELD_ERROR}
                             size="default"
                             extraClass="mb-6"
                             autoComplete="new-password"
@@ -100,11 +78,11 @@ function ResetPassword(): JSX.Element {
                         <Input
                             type="text"
                             placeholder="Введите код из письма"
-                            onChange={onChange}
-                            value={form.token}
+                            onChange={onFieldChange}
+                            value={formValues.token}
                             name="token"
                             error={formErrors.token}
-                            errorText="Поле не должно быть пустым"
+                            errorText={INPUT_FIELD_ERROR}
                             size="default"
                             extraClass="mb-6"
                             autoComplete="token"

@@ -1,5 +1,5 @@
-import { useState, useRef, SyntheticEvent, FormEvent } from "react";
-import { useAppDispatch, useAppSelector } from "../../utils/hooks";
+import { useState, useRef, FormEvent, RefObject } from "react";
+import { useAppDispatch, useAppSelector, useForm, useShowPass } from "../../utils/hooks";
 import styles from "./profile-form.module.css";
 import ModalOverlay from "../modal-overlay/modal-overlay";
 import Modal from "../modal/modal";
@@ -12,7 +12,8 @@ import {
     selectAuthRequest,
     selectAuthError,
 } from "../../services/selectors/authSelectors";
-import { IRegisterForm } from "../../utils/types";
+import { TAuth } from "../../utils/types";
+import { INPUT_FIELD_ERROR, PROFILE_PASS_FIELD_ERROR } from "../../utils/consts";
 
 function ProfileForm(): JSX.Element {
     const name = useAppSelector(selectName);
@@ -20,75 +21,42 @@ function ProfileForm(): JSX.Element {
     const authRequest = useAppSelector(selectAuthRequest);
     const authError = useAppSelector(selectAuthError);
     const dispatch = useAppDispatch();
-    const initialFormData: IRegisterForm<string> = {
-        name,
-        email,
-        password: "",
-    };
-    const initialFormErrors: IRegisterForm<boolean> = {
-        name: false,
-        email: false,
-        password: false,
-    };
+    const { formValues, formErrors, isFormValid, onFieldChange, setFormValues, setFormErrors } =
+        useForm<TAuth>({
+            name,
+            email,
+            password: "",
+        });
+    const { showPass, setShowPass, onShowPassIconClick } = useShowPass();
     const [formChanging, setFormChanging] = useState<boolean>(false);
-    const [form, setForm] = useState<IRegisterForm<string>>(initialFormData);
-    const [formErrors, setFormErrors] = useState<IRegisterForm<boolean>>(initialFormErrors);
-    const [show, setShow] = useState<boolean>(false);
     const nameRef = useRef<HTMLInputElement>(null);
     const emailRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
 
-    const onNameEditIconClick = (): void => {
+    const onEditIconClick = (ref: RefObject<HTMLInputElement>): void => {
         setFormChanging(true);
-        setTimeout(() => nameRef.current?.focus(), 0);
-    };
-
-    const onEmailEditIconClick = (): void => {
-        setFormChanging(true);
-        setTimeout(() => emailRef.current?.focus(), 0);
-    };
-
-    const onPasswordEditIconClick = (): void => {
-        setFormChanging(true);
-        setTimeout(() => passwordRef.current?.focus(), 0);
-    };
-
-    const onChange = (e: SyntheticEvent): void => {
-        const target = e.target as HTMLInputElement;
-        setFormErrors({ ...formErrors, [target.name]: false });
-        setForm({ ...form, [target.name]: target.value });
-    };
-
-    const onShowIconClick = (): void => {
-        setShow(!show);
+        setTimeout(() => ref.current?.focus(), 0);
     };
 
     const onFormReset = (): void => {
         setFormChanging(false);
-        setForm(initialFormData);
-        setFormErrors(initialFormErrors);
-        setShow(false);
+        setFormValues({
+            name,
+            email,
+            password: "",
+        });
+        setFormErrors({
+            name: false,
+            email: false,
+            password: false,
+        });
+        setShowPass(false);
     };
 
     const onFormSubmit = (e: FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
-        const noValidPass: boolean =
-            !form.password || form.password.length < 6 || form.password.length > 15;
-        const checkFormValid: IRegisterForm<boolean> = {
-            name: !form.name,
-            email: !form.email,
-            password: noValidPass,
-        };
-        if (!form.name || !form.email || noValidPass) {
-            setFormErrors(checkFormValid);
-            return;
-        }
-        const data: IRegisterForm<string> = {
-            name: form.name,
-            email: form.email,
-            password: form.password,
-        };
-        dispatch(patchUser(data));
+        if (!isFormValid()) return;
+        dispatch(patchUser(formValues));
     };
 
     const closeModal = (): void => {
@@ -101,14 +69,14 @@ function ProfileForm(): JSX.Element {
                 <Input
                     type="text"
                     placeholder="Имя"
-                    onChange={onChange}
+                    onChange={onFieldChange}
                     icon={!formChanging ? "EditIcon" : undefined}
-                    onIconClick={onNameEditIconClick}
+                    onIconClick={() => onEditIconClick(nameRef)}
                     disabled={!formChanging}
-                    value={form.name}
+                    value={formValues.name as string}
                     name="name"
                     error={formErrors.name}
-                    errorText="Поле не должно быть пустым"
+                    errorText={INPUT_FIELD_ERROR}
                     size="default"
                     extraClass="mb-6"
                     autoComplete="username"
@@ -117,30 +85,32 @@ function ProfileForm(): JSX.Element {
                 <Input
                     type="email"
                     placeholder="E-mail"
-                    onChange={onChange}
+                    onChange={onFieldChange}
                     icon={!formChanging ? "EditIcon" : undefined}
-                    onIconClick={onEmailEditIconClick}
+                    onIconClick={() => onEditIconClick(emailRef)}
                     disabled={!formChanging}
-                    value={form.email}
+                    value={formValues.email}
                     name="email"
                     error={formErrors.email}
-                    errorText="Поле не должно быть пустым"
+                    errorText={INPUT_FIELD_ERROR}
                     size="default"
                     extraClass="mb-6"
                     autoComplete="email"
                     ref={emailRef}
                 />
                 <Input
-                    type={show ? "text" : "password"}
+                    type={showPass ? "text" : "password"}
                     placeholder="Пароль"
-                    onChange={onChange}
+                    onChange={onFieldChange}
                     disabled={!formChanging}
-                    icon={!formChanging ? "EditIcon" : show ? "HideIcon" : "ShowIcon"}
-                    value={form.password}
+                    icon={!formChanging ? "EditIcon" : showPass ? "HideIcon" : "ShowIcon"}
+                    value={formValues.password}
                     name="password"
                     error={formErrors.password}
-                    onIconClick={!formChanging ? onPasswordEditIconClick : onShowIconClick}
-                    errorText="Пароль должен содержать от 6 до 15 символов. Введите новый пароль для обновления или старый для подтверждения"
+                    onIconClick={
+                        !formChanging ? () => onEditIconClick(passwordRef) : onShowPassIconClick
+                    }
+                    errorText={PROFILE_PASS_FIELD_ERROR}
                     size="default"
                     extraClass="mb-6"
                     autoComplete="new-password"

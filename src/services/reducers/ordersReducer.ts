@@ -2,7 +2,6 @@ import { TOrderInfo } from "../../utils/types";
 import {
     ORDERS_CONNECTION_SUCCESS,
     ORDERS_ERROR,
-    ORDERS_CLEAR_ERROR,
     ORDERS_CONNECTION_CLOSED,
     ORDERS_GET_MESSAGE,
     TOrdersActions,
@@ -39,14 +38,6 @@ export const ordersReducer = (state = initialState, action: TOrdersActions): TOr
                 socketConnected: false,
                 socketError: action.data,
             };
-        }
-        case ORDERS_CLEAR_ERROR: {
-            if (state.socketError)
-                return {
-                    ...state,
-                    socketError: "",
-                };
-            else return state;
         }
         case ORDERS_CONNECTION_CLOSED: {
             return {

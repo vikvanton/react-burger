@@ -1,5 +1,5 @@
-import { useState, useEffect, ChangeEvent, FormEvent } from "react";
-import { useAppDispatch, useAppSelector } from "../../utils/hooks";
+import { useEffect, FormEvent } from "react";
+import { useAppDispatch, useAppSelector, useForm, useShowPass } from "../../utils/hooks";
 import { setAuth, CLEAR_AUTH_ERROR } from "../../services/actions/authActions";
 import { PASS_RESTORATION_END } from "../../services/actions/passRestorationActions";
 import styles from "./login.module.css";
@@ -14,16 +14,15 @@ import {
     selectAuthError,
 } from "../../services/selectors/authSelectors";
 import { selectRestorationProcess } from "../../services/selectors/passRestorationSelectors";
-import { ILoginForm, TAuth, TLocationPrevState } from "../../utils/types";
-import { LOGIN } from "../../utils/consts";
+import { TAuth, TLocationPrevState } from "../../utils/types";
+import { INPUT_FIELD_ERROR, LOGIN, PASS_FIELD_ERROR } from "../../utils/consts";
 
 function Login(): JSX.Element {
-    const [form, setForm] = useState<ILoginForm<string>>({ email: "", password: "" });
-    const [formErrors, setFormErrors] = useState<ILoginForm<boolean>>({
-        email: false,
-        password: false,
+    const { formValues, formErrors, isFormValid, onFieldChange } = useForm<TAuth>({
+        email: "",
+        password: "",
     });
-    const [show, setShow] = useState<boolean>(false);
+    const { showPass, onShowPassIconClick } = useShowPass();
     const accessToken = useAppSelector(selectAccessToken);
     const authRequest = useAppSelector(selectAuthRequest);
     const authError = useAppSelector(selectAuthError);
@@ -35,34 +34,14 @@ function Login(): JSX.Element {
         restorationProcess && dispatch({ type: PASS_RESTORATION_END });
     }, [dispatch, restorationProcess]);
 
-    const onChange = (e: ChangeEvent<HTMLInputElement>): void => {
-        setFormErrors({ ...formErrors, [e.target.name]: false });
-        setForm({ ...form, [e.target.name]: e.target.value });
-    };
-
-    const onIconClick = (): void => {
-        setShow(!show);
-    };
-
     const closeModal = (): void => {
         dispatch({ type: CLEAR_AUTH_ERROR });
     };
 
     const onFormSubmit = (e: FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
-        const checkFormValid: ILoginForm<boolean> = {
-            email: !form.email,
-            password: !form.password,
-        };
-        if (!form.email || !form.password) {
-            setFormErrors(checkFormValid);
-            return;
-        }
-        const data: TAuth = {
-            email: form.email,
-            password: form.password,
-        };
-        dispatch(setAuth(data, LOGIN));
+        if (!isFormValid()) return;
+        dispatch(setAuth(formValues, LOGIN));
     };
 
     if (accessToken) {
@@ -83,25 +62,25 @@ function Login(): JSX.Element {
                     <Input
                         type="email"
                         placeholder="E-mail"
-                        onChange={onChange}
-                        value={form.email}
+                        onChange={onFieldChange}
+                        value={formValues.email}
                         name="email"
                         error={formErrors.email}
-                        errorText="Поле не должно быть пустым"
+                        errorText={INPUT_FIELD_ERROR}
                         size="default"
                         extraClass="mb-6"
                         autoComplete="email"
                     />
                     <Input
-                        type={show ? "text" : "password"}
+                        type={showPass ? "text" : "password"}
                         placeholder="Пароль"
-                        onChange={onChange}
-                        icon={show ? "HideIcon" : "ShowIcon"}
-                        value={form.password}
+                        onChange={onFieldChange}
+                        icon={showPass ? "HideIcon" : "ShowIcon"}
+                        value={formValues.password}
                         name="password"
                         error={formErrors.password}
-                        onIconClick={onIconClick}
-                        errorText="Поле не должно быть пустым"
+                        onIconClick={onShowPassIconClick}
+                        errorText={PASS_FIELD_ERROR}
                         size="default"
                         extraClass="mb-6"
                         autoComplete="current-password"

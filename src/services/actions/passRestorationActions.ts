@@ -1,5 +1,5 @@
 import { restorePassRequest, resetPassRequest } from "../../utils/api";
-import { TAppThunk, TEmail, TResetPassForm } from "../../utils/types";
+import { TAppThunk, TEmail, TRestorePass } from "../../utils/types";
 
 export const PASS_RESTORATION_REQUEST: "PASS_RESTORATION_REQUEST" = "PASS_RESTORATION_REQUEST";
 export const RESTORE_PASS_SUCCESS: "RESTORE_PASS_SUCCESS" = "RESTORE_PASS_SUCCESS";
@@ -62,7 +62,7 @@ export const restorePass = (data: TEmail): TAppThunk => {
     };
 };
 
-export const resetPass = (data: TResetPassForm<string>): TAppThunk => {
+export const resetPass = (data: TRestorePass): TAppThunk => {
     return (dispatch) => {
         dispatch({ type: PASS_RESTORATION_REQUEST });
         resetPassRequest(data)

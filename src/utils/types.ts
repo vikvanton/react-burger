@@ -6,7 +6,11 @@ import { TAuthActions } from "../services/actions/authActions";
 import { TIngredientsActions } from "../services/actions/ingredientsActions";
 import { TViewInModalActions } from "../services/actions/viewInModalActions";
 import { TPassRestorationActions } from "../services/actions/passRestorationActions";
-import { TOrdersActions } from "../services/actions/ordersActions";
+import {
+    TOrdersActions,
+    WS_ORDERS_CONNECTION_START,
+    WS_ORDERS_CONNECTION_STOP,
+} from "../services/actions/ordersActions";
 
 type TLocation = {
     key?: string;
@@ -174,47 +178,39 @@ export interface ISetAuth extends IUserData, IRefreshTokens {}
 
 export interface ISetAuthResponse extends IResponse, ISetAuth {}
 
-export type TResetPassForm<T> = {
-    password: T;
-    token: T;
-};
-
-export interface ILoginForm<T> {
-    email: T;
-    password: T;
-}
-
-export interface IRegisterForm<T> extends ILoginForm<T> {
-    name: T;
-}
-
 export type TOpenModalFunc = (action: TAppActions, pathname: string) => void;
 
-// Тип для сокет-экшена создания соединения
-export interface IWsConnectionStart {
-    readonly type: string;
+// Универсальный type экшена для открытия сокет-соединения
+// Новые типы могут добавлятся через union
+type TWsStartActionsType = typeof WS_ORDERS_CONNECTION_START;
+
+// Универсальный type экшена для окончания сеанса сокет-соединения
+// Новые типы могут добавлятся через union
+type TWsStopActionsType = typeof WS_ORDERS_CONNECTION_STOP;
+
+// Тип для сокет-экшена открытия соединения
+interface IWsConnectionStart {
+    readonly type: TWsStartActionsType;
     // эндпоинт для открываемого сокета
     readonly endpoint: string;
 }
 
 // Тип для сокет-экшена окончания сеанса
-export interface IWsConnectionStop {
-    readonly type: string;
+interface IWsConnectionStop {
+    readonly type: TWsStopActionsType;
 }
 
-export type TWsConnection = IWsConnectionStart | IWsConnectionStop;
-
-// Тип для объекта экшенов, передаваемый в сокет-мидлвар
+// Тип для объекта экшенов, передаваемого в сокет-мидлвар
 export type TWsActions = {
-    // Универсальный экшн для открытия сокет-соединения
-    wsInit: string;
+    // Универсальный тип экшена для открытия сокет-соединения
+    wsInit: TWsStartActionsType;
     // Экшен-креаторы для событий сокета
     wsOpen: () => TAppActions | TAppThunk;
     wsError: (error: string) => TAppActions | TAppThunk;
     wsMessage: (data: string) => TAppActions | TAppThunk;
     wsClose: () => TAppActions | TAppThunk;
-    // Универсальный экшн для окончания сеанса сокет-соединения
-    wsEnd: string;
+    // Универсальный тип экшена для окончания сеанса сокет-соединения
+    wsEnd: TWsStopActionsType;
 };
 
 export type TAppActions =
@@ -225,7 +221,8 @@ export type TAppActions =
     | TPassRestorationActions
     | TOrdersActions
     | TViewInModalActions
-    | TWsConnection;
+    | IWsConnectionStart
+    | IWsConnectionStop;
 
 export type TAppState = ReturnType<typeof store.getState>;
 

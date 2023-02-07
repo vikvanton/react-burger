@@ -11,9 +11,12 @@ import {
 import OrderCard from "../order-card/order-card";
 import { selectCategories } from "../../services/selectors/ingredientsSelectors";
 import { TOrderInfo } from "../../utils/types";
-import { WS_ORDERS_CONNECTION_START, WS_ORDERS_CONNECTION_STOP } from "../../utils/consts";
 import { selectAccessToken } from "../../services/selectors/authSelectors";
-import { ORDERS_CLEAR_ERROR } from "../../services/actions/ordersActions";
+import {
+    WS_ORDERS_CONNECTION_START,
+    WS_ORDERS_CONNECTION_STOP,
+} from "../../services/actions/ordersActions";
+import { WS_NO_CONNECTION, WS_RECEIVING_DATA } from "../../utils/consts";
 
 function ProfileOrders(): JSX.Element {
     const dispatch = useAppDispatch();
@@ -28,7 +31,6 @@ function ProfileOrders(): JSX.Element {
         dispatch({ type: WS_ORDERS_CONNECTION_START, endpoint: `?token=${accessToken.slice(7)}` });
         return () => {
             dispatch({ type: WS_ORDERS_CONNECTION_STOP });
-            dispatch({ type: ORDERS_CLEAR_ERROR });
         };
     }, [accessToken, dispatch]);
 
@@ -62,12 +64,12 @@ function ProfileOrders(): JSX.Element {
                         </ul>
                     </section>
                 ) : (
-                    <InfoMessage text={"Получаем данные с сервера..."}>
+                    <InfoMessage text={WS_RECEIVING_DATA}>
                         <InfoIcon type="primary" />
                     </InfoMessage>
                 )
             ) : (
-                <InfoMessage text={"Отсутствует соединение с сервером"}>
+                <InfoMessage text={WS_NO_CONNECTION}>
                     <InfoIcon type="error" />
                 </InfoMessage>
             )}

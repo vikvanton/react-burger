@@ -7,6 +7,7 @@ import {
     SetStateAction,
     RefObject,
     useMemo,
+    ChangeEvent,
 } from "react";
 import { TypedUseSelectorHook, useSelector, useDispatch } from "react-redux";
 import { getUserDataRequest, refreshTokensRequest } from "./api";
@@ -68,6 +69,7 @@ export const useCheckAuth = (): {
     return { checking, checkAuth };
 };
 
+// Хук для использования Intersection Observer API
 export const useIntersectionObserver = (
     containerRef: RefObject<HTMLElement>,
     targetRefs: Array<RefObject<HTMLElement>>,
@@ -103,7 +105,7 @@ export const useIntersectionObserver = (
 };
 
 // Хук для получения массива с необходимыми данными ингредиентов
-// заказа по их айдишникам и подсчета суммы заказа
+// заказа по их айдишникам и подсчета общей суммы заказа
 export const useOrderData = (
     ingredients: Array<string>,
     categories: TCategories
@@ -115,17 +117,25 @@ export const useOrderData = (
         orderIngredients: Array<TOrderIngredient>;
         orderSum: number;
     } => {
+        // Массив результатов
         const orderIngredients: Array<TOrderIngredient> = [];
         let orderSum: number = 0;
         let category: keyof typeof categories;
+        // Проходим по массиву айдишников ингредиентов
         ingredients.forEach((ingredient) => {
+            // Проверяем, нет ли уже такого ингредиента в массиве результатов
             let index = orderIngredients.findIndex((item) => item._id === ingredient);
+            // Если есть, то увеличиваем счетчик количества ингредиента и
+            // добавляем его стоимость к общей сумме
             if (index !== -1) {
                 orderIngredients[index].count++;
                 orderSum += orderIngredients[index].price;
+                // Если нет, то ищем ингредиент в категориях
             } else {
                 for (category in categories) {
                     let result = categories[category].find((item) => item._id === ingredient);
+                    // Если нашли в категории, добавляем в массив результатов новый объект
+                    // с информацией об ингредиенте и увеличиваем общую сумму
                     if (result) {
                         orderIngredients.push({
                             _id: result._id,
@@ -163,4 +173,80 @@ export const useOpenModalFunc = (): TOpenModalFunc => {
     );
 
     return openModalFunc;
+};
+
+// Хук для работы с формой
+export const useForm = <T>(
+    inputValues: T
+): {
+    formValues: T;
+    formErrors: { [key in keyof T]: boolean };
+    setFormValues: Dispatch<SetStateAction<T>>;
+    setFormErrors: Dispatch<SetStateAction<{ [key in keyof T]: boolean }>>;
+    isFormValid: () => boolean;
+    onFieldChange: (e: ChangeEvent<HTMLInputElement>) => void;
+} => {
+    // Инициализируем объект-состояние полей формы на основе входного объекта
+    const [formValues, setFormValues] = useState<T>(inputValues);
+    // На основе входного объекта с полями формы создаем объект-состояние
+    // для признаков ошибки каждого из полей формы
+    const [formErrors, setFormErrors] = useState<{ [key in keyof T]: boolean }>(() => {
+        const initialErros: { [key: string]: boolean } = {};
+        for (let key in inputValues) {
+            initialErros[key] = false;
+        }
+        return initialErros as { [key in keyof T]: boolean };
+    });
+
+    // Ф-ция обработки изменения значения поля формы
+    const onFieldChange = (e: ChangeEvent<HTMLInputElement>): void => {
+        setFormErrors({ ...formErrors, [e.target.name]: false });
+        setFormValues({ ...formValues, [e.target.name]: e.target.value });
+    };
+
+    // Ф-ция проверки валидности полей формы
+    const isFormValid = (): boolean => {
+        let isValid: boolean = true;
+        const hasFormErrors: { [key: string]: boolean } = {};
+        const setFieldError = (key: Extract<keyof T, string>) => {
+            hasFormErrors[key] = true;
+            isValid = false;
+        };
+        for (let key in formValues) {
+            switch (key) {
+                // Если поле пароля, проверяем дополнительно допустимую длину
+                case "password":
+                    if (
+                        !formValues[key] ||
+                        (formValues[key] as string).length < 6 ||
+                        (formValues[key] as string).length > 15
+                    )
+                        setFieldError(key);
+                    break;
+                // Для остальных полей проверяем на пустое значение
+                default:
+                    if (!formValues[key]) setFieldError(key);
+            }
+        }
+        if (!isValid)
+            setFormErrors({ ...formErrors, ...(hasFormErrors as { [key in keyof T]: boolean }) });
+        return isValid;
+    };
+
+    return { formValues, formErrors, setFormValues, setFormErrors, isFormValid, onFieldChange };
+};
+
+// Хук для включения/отключения отображения символов пароля в поле ввода формы
+export const useShowPass = (): {
+    showPass: boolean;
+    setShowPass: Dispatch<SetStateAction<boolean>>;
+    onShowPassIconClick: () => void;
+} => {
+    const [showPass, setShowPass] = useState<boolean>(false);
+
+    const onShowPassIconClick = (): void => {
+        setShowPass(!showPass);
+    };
+
+    return { showPass, setShowPass, onShowPassIconClick };
 };

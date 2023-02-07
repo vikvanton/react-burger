@@ -1,7 +1,7 @@
 import { memo } from "react";
 import styles from "./burger-ingredients-item.module.css";
 import { CurrencyIcon, Counter } from "@ya.praktikum/react-developer-burger-ui-components";
-import { useDrag } from "react-dnd";
+import { DragPreviewImage, useDrag } from "react-dnd";
 import { TIngredient, TOpenModalFunc } from "../../utils/types";
 import { SET_VIEW_INGREDIENT } from "../../services/actions/viewInModalActions";
 
@@ -11,7 +11,7 @@ interface IBurgerIngredientsItemProps {
 }
 
 function BurgerIngredientsItem({ ingredient, callback }: IBurgerIngredientsItemProps): JSX.Element {
-    const [, dragRef] = useDrag({
+    const [, dragRef, previewRef] = useDrag({
         type: `${ingredient.type === "bun" ? "bun" : "ingredient"}`,
         item: ingredient,
     });
@@ -32,6 +32,7 @@ function BurgerIngredientsItem({ ingredient, callback }: IBurgerIngredientsItemP
                         alt="Indredient"
                         className={`${styles.image} ml-4`}
                     />
+                    <DragPreviewImage connect={previewRef} src={ingredient.image} />
                 </div>
                 <div>
                     <p className={`${styles.price} mt-2 mb-2`}>

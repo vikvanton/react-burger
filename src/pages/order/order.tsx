@@ -3,7 +3,6 @@ import { InfoIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useEffect } from "react";
 import { useParams, useRouteMatch } from "react-router";
 import InfoMessage from "../../components/info-message/info-message";
-import { ORDERS_CLEAR_ERROR } from "../../services/actions/ordersActions";
 import { selectCategories } from "../../services/selectors/ingredientsSelectors";
 import {
     selectOrder,
@@ -13,8 +12,12 @@ import {
 } from "../../services/selectors/ordersSelectors";
 import { useAppDispatch, useAppSelector, useOrderData } from "../../utils/hooks";
 import OrderInfo from "../../components/order-info/order-info";
-import { WS_ORDERS_CONNECTION_START, WS_ORDERS_CONNECTION_STOP } from "../../utils/consts";
 import { selectAccessToken } from "../../services/selectors/authSelectors";
+import {
+    WS_ORDERS_CONNECTION_START,
+    WS_ORDERS_CONNECTION_STOP,
+} from "../../services/actions/ordersActions";
+import { WS_NO_CONNECTION, WS_RECEIVING_DATA } from "../../utils/consts";
 
 function Order() {
     const dispatch = useAppDispatch();
@@ -36,7 +39,6 @@ function Order() {
         });
         return () => {
             dispatch({ type: WS_ORDERS_CONNECTION_STOP });
-            dispatch({ type: ORDERS_CLEAR_ERROR });
         };
     }, [accessToken, dispatch, path]);
 
@@ -51,7 +53,7 @@ function Order() {
         <>
             {socketConnected ? (
                 !orders.length ? (
-                    <InfoMessage text={"Получаем данные с сервера..."}>
+                    <InfoMessage text={WS_RECEIVING_DATA}>
                         <InfoIcon type="primary" />
                     </InfoMessage>
                 ) : order ? (
@@ -68,7 +70,7 @@ function Order() {
                     </InfoMessage>
                 )
             ) : (
-                <InfoMessage text={"Отсутствует соединение с сервером"}>
+                <InfoMessage text={WS_NO_CONNECTION}>
                     <InfoIcon type="error" />
                 </InfoMessage>
             )}

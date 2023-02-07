@@ -1,12 +1,13 @@
 import { memo } from "react";
 import styles from "./burger-ingredients-item.module.css";
 import { CurrencyIcon, Counter } from "@ya.praktikum/react-developer-burger-ui-components";
-import { useDrag } from "react-dnd";
-import { TIngredient } from "../../utils/types";
+import { DragPreviewImage, useDrag } from "react-dnd";
+import { TIngredient, TOpenModalFunc } from "../../utils/types";
+import { SET_VIEW_INGREDIENT } from "../../services/actions/viewInModalActions";
 
 interface IBurgerIngredientsItemProps {
     ingredient: TIngredient;
-    callback: (ingredient: TIngredient) => void;
+    callback: TOpenModalFunc;
 }
 
 function BurgerIngredientsItem({ ingredient, callback }: IBurgerIngredientsItemProps): JSX.Element {
@@ -16,12 +17,12 @@ function BurgerIngredientsItem({ ingredient, callback }: IBurgerIngredientsItemP
     });
 
     const onClickHandler = (): void => {
-        callback(ingredient);
+        callback({ type: SET_VIEW_INGREDIENT, data: ingredient }, `/ingredient/${ingredient._id}`);
     };
 
     return (
         <>
-            <li className={styles.card}>
+            <li className={styles.card} onClick={onClickHandler}>
                 <div ref={dragRef}>
                     {ingredient.count ? (
                         <Counter count={ingredient.count} size="default" extraClass="m-1" />
@@ -31,8 +32,9 @@ function BurgerIngredientsItem({ ingredient, callback }: IBurgerIngredientsItemP
                         alt="Indredient"
                         className={`${styles.image} ml-4`}
                     />
+                    <DragPreviewImage connect={previewRef} src={ingredient.image} />
                 </div>
-                <div className={styles.info} onClick={onClickHandler}>
+                <div>
                     <p className={`${styles.price} mt-2 mb-2`}>
                         <span className="text text_type_digits-default pr-2">
                             {ingredient.price}

@@ -1,6 +1,6 @@
-import { SyntheticEvent, useState } from "react";
+import { FormEvent } from "react";
 import styles from "./forgot-password.module.css";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppDispatch, useAppSelector, useForm } from "../../utils/hooks";
 import { Link, Redirect } from "react-router-dom";
 import ModalOverlay from "../../components/modal-overlay/modal-overlay";
 import Modal from "../../components/modal/modal";
@@ -15,31 +15,24 @@ import {
     selectPassRestorationRequest,
     selectPassRestorationError,
 } from "../../services/selectors/passRestorationSelectors";
+import { TEmail } from "../../utils/types";
+import { INPUT_FIELD_ERROR } from "../../utils/consts";
 
 function ForgotPassword(): JSX.Element {
-    const [email, setEmail] = useState<string>("");
-    const [emailError, setEmailError] = useState<boolean>(false);
-    const restorationProcess: boolean = useSelector<any, boolean>(selectRestorationProcess);
-    const passRestorationRequest: boolean = useSelector<any, boolean>(selectPassRestorationRequest);
-    const passRestorationError: string = useSelector<any, string>(selectPassRestorationError);
-    const dispatch: any = useDispatch<any>();
+    const { formValues, formErrors, isFormValid, onFieldChange } = useForm<TEmail>({ email: "" });
+    const restorationProcess = useAppSelector(selectRestorationProcess);
+    const passRestorationRequest = useAppSelector(selectPassRestorationRequest);
+    const passRestorationError = useAppSelector(selectPassRestorationError);
+    const dispatch = useAppDispatch();
 
     const closeModal = (): void => {
         dispatch({ type: CLEAR_PASS_RESTORATION_ERROR });
     };
 
-    const onChange = (e: SyntheticEvent): void => {
-        setEmailError(false);
-        setEmail((e.target as HTMLInputElement).value);
-    };
-
-    const onFormSubmit = (e: SyntheticEvent): void => {
+    const onFormSubmit = (e: FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
-        if (!email) {
-            setEmailError(true);
-            return;
-        }
-        dispatch(restorePass({ email }));
+        if (!isFormValid()) return;
+        dispatch(restorePass(formValues));
     };
 
     if (restorationProcess)
@@ -60,11 +53,11 @@ function ForgotPassword(): JSX.Element {
                     <Input
                         type="email"
                         placeholder="Укажите e-mail"
-                        onChange={onChange}
-                        value={email}
+                        onChange={onFieldChange}
+                        value={formValues.email}
                         name="email"
-                        error={emailError}
-                        errorText="Поле не должно быть пустым"
+                        error={formErrors.email}
+                        errorText={INPUT_FIELD_ERROR}
                         size="default"
                         extraClass="mb-6"
                         autoComplete="email"

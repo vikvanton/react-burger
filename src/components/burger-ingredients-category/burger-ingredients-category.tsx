@@ -2,12 +2,12 @@ import { memo } from "react";
 import { forwardRef } from "react";
 import styles from "./burger-ingredients-category.module.css";
 import BurgerIngredientsItem from "../burger-ingredients-item/burger-ingredients-item";
-import { TIngredient } from "../../utils/types";
+import { TIngredient, TOpenModalFunc } from "../../utils/types";
 
 interface IBurgerIngredientsCategoryProps {
-    ingredients: Array<TIngredient>;
+    ingredients: ReadonlyArray<TIngredient>;
     name: string;
-    callback: (ingredient: TIngredient) => void;
+    callback: TOpenModalFunc;
     extraClass?: string;
 }
 

@@ -1,0 +1,82 @@
+.card {
+    background: var(--background);
+    border-radius: 40px;
+    padding: 24px;
+}
+
+.card:hover {
+    cursor: pointer;
+    opacity: 0.4;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.date {
+    color: var(--text-inactive-color);
+}
+
+.summary,
+.icons {
+    display: flex;
+    align-items: center;
+}
+
+.icons {
+    justify-content: flex-start;
+    list-style-type: none;
+    margin: 0;
+    padding-left: 0;
+}
+
+.summary {
+    justify-content: space-between;
+}
+
+.image {
+    margin-right: -15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    width: 64px;
+    height: 64px;
+    border: 2px solid transparent;
+    background: linear-gradient(#131316, #131316) padding-box,
+        linear-gradient(63.18deg, #801ab3 0%, #4c4cff 100%) border-box;
+}
+
+.imageLast {
+    position: relative;
+    background: linear-gradient(#1c1c21, #1c1c21) padding-box,
+        linear-gradient(63.18deg, #801ab3 0%, #4c4cff 100%) border-box;
+}
+
+.imageLastCounter {
+    position: absolute;
+}
+
+.image > img {
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.imageLast > img {
+    opacity: 0.4;
+}
+
+.orderSum {
+    display: flex;
+    gap: 9px;
+}
+
+.done {
+    color: var(--colors-interface-success);
+}
+
+.error {
+    color: var(--colors-interface-error);
+}

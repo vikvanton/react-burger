@@ -1,7 +1,7 @@
 import { memo } from "react";
 import styles from "./app-header.module.css";
 import { NavLink } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../../utils/hooks";
 import {
     Logo,
     BurgerIcon,
@@ -11,7 +11,7 @@ import {
 import { selectRefreshToken } from "../../services/selectors/authSelectors";
 
 function AppHeader(): JSX.Element {
-    const refreshToken: string = useSelector<any, string>(selectRefreshToken);
+    const refreshToken = useAppSelector(selectRefreshToken);
 
     return (
         <header className={styles.header}>
@@ -33,6 +33,7 @@ function AppHeader(): JSX.Element {
                             to="/feed"
                             className={`${styles.link} text text_type_main-default`}
                             activeClassName={styles.linkSelected}
+                            exact
                         >
                             <ListIcon type="secondary" />
                             Лента заказов

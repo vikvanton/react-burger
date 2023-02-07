@@ -1,0 +1,21 @@
+.statusColumn {
+    width: 282px;
+}
+
+.listNumbers {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    list-style-type: none;
+    margin: 0;
+    padding-left: 0;
+}
+
+.numberDone {
+    color: var(--colors-interface-success);
+}
+
+.columns {
+    display: flex;
+    gap: 60px;
+}

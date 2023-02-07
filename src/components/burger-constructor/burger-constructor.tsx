@@ -1,5 +1,4 @@
 import { useCallback } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import Modal from "../modal/modal";
 import ModalOverlay from "../modal-overlay/modal-overlay";
 import OrderDetails from "../order-details/order-details";
@@ -26,7 +25,6 @@ import {
 } from "../../services/actions/orderActions";
 import { CurrencyIcon, Button, InfoIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useDrop } from "react-dnd";
-import { useCheckAuth } from "../../utils/hooks";
 import {
     selectConstructorBun,
     selectConstructorList,
@@ -37,23 +35,19 @@ import {
     selectOrderRequest,
     selectOrderError,
 } from "../../services/selectors/orderSelectors";
-import { selectAuthRequest } from "../../services/selectors/authSelectors";
+import { selectAccessToken } from "../../services/selectors/authSelectors";
 import { TIngredient, TConstructorIngredient, TOrder } from "../../utils/types";
+import { useAppSelector, useAppDispatch } from "../../utils/hooks";
 
 function BurgerConstructor(): JSX.Element {
-    const bun: TConstructorIngredient = useSelector<any, TConstructorIngredient>(
-        selectConstructorBun
-    );
-    const list: Array<TConstructorIngredient> = useSelector<any, Array<TConstructorIngredient>>(
-        selectConstructorList
-    );
-    const orderNumber: number = useSelector<any, number>(selectOrderNumber);
-    const orderRequest: boolean = useSelector<any, boolean>(selectOrderRequest);
-    const orderError: string = useSelector<any, string>(selectOrderError);
-    const authRequest: boolean = useSelector<any, boolean>(selectAuthRequest);
-    const totalSum: number = useSelector<any, number>(selectTotalSum);
-    const dispatch: any = useDispatch<any>();
-    let { checkAuth } = useCheckAuth();
+    const bun = useAppSelector(selectConstructorBun);
+    const list = useAppSelector(selectConstructorList);
+    const totalSum = useAppSelector(selectTotalSum);
+    const orderNumber = useAppSelector(selectOrderNumber);
+    const orderRequest = useAppSelector(selectOrderRequest);
+    const orderError = useAppSelector(selectOrderError);
+    const accessToken = useAppSelector(selectAccessToken);
+    const dispatch = useAppDispatch();
 
     const [{ isDropBunTop }, dropBunTop] = useDrop({
         accept: "bun",
@@ -85,7 +79,7 @@ function BurgerConstructor(): JSX.Element {
         }),
     });
 
-    const onDropIngredient = (ingredient: TIngredient) => {
+    const onDropIngredient = (ingredient: TIngredient): void => {
         dispatch(addToConstructor(ingredient));
         dispatch({
             type: INC_INGREDIENT_COUNTER,
@@ -121,30 +115,24 @@ function BurgerConstructor(): JSX.Element {
             });
             return;
         }
-        // При попытке сделать заказ проверяем, авторизован ли пользователь.
-        // Можно было просто проверить аксесстокен в хранилище и добавить в хедер запроса аксесстокен,
-        // но, как я понял, запрос на заказ может выполнятся и без токена, поэтому предварительно
-        // проверяем на валидность
-        checkAuth().then((isAuth: boolean): void => {
-            // Делаем заказ, если авторизация подтверждена.
-            if (isAuth) {
-                const data: TOrder = {
-                    ingredients: [
-                        bun._id,
-                        ...list.map((item: TConstructorIngredient) => item._id),
-                        bun._id,
-                    ],
-                };
-                dispatch(postOrder(data));
-            } else {
-                // Если нет, то выводим сообщение. По заданию было редиректить на /логин
-                // но мне кажется, так информативнее)
-                dispatch({
-                    type: SET_ORDER_ERROR,
-                    data: "Войдите чтобы сделать заказ",
-                });
-            }
-        });
+        // Делаем заказ, если есть пользователь.
+        if (accessToken) {
+            const data: TOrder = {
+                ingredients: [
+                    bun._id,
+                    ...list.map((item: TConstructorIngredient) => item._id),
+                    bun._id,
+                ],
+            };
+            dispatch(postOrder(data));
+        } else {
+            // Если нет, то выводим сообщение. По заданию было редиректить на /логин
+            // но мне кажется, так информативнее)
+            dispatch({
+                type: SET_ORDER_ERROR,
+                data: "Войдите чтобы сделать заказ",
+            });
+        }
     };
 
     const handleDropItem = useCallback(
@@ -219,7 +207,7 @@ function BurgerConstructor(): JSX.Element {
                     </span>
                 ) : null}
             </section>
-            {(orderRequest || authRequest) && <ModalOverlay />}
+            {orderRequest && <ModalOverlay />}
             {(orderNumber || orderError) && (
                 <Modal onClose={closeModal}>
                     {orderError ? (

@@ -16,7 +16,7 @@ import {
     TAppDispatch,
 } from "./types";
 import { NORMA_API } from "./consts";
-import { CLEAR_AUTH_SUCCESS, SET_TOKENS } from "../services/actions/authActions";
+import { CLEAR_AUTH_SUCCESS, SET_TOKENS } from "../services/actions/auth";
 
 const checkResponse = <T>(response: Response): Promise<T> => {
     return response.ok

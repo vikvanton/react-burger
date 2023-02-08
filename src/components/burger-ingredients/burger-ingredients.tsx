@@ -3,7 +3,7 @@ import styles from "./burger-ingredients.module.css";
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 import BurgerIngredientsCategory from "../burger-ingredients-category/burger-ingredients-category";
 import { useIntersectionObserver, useOpenModalFunc } from "../../utils/hooks";
-import { selectBun, selectMain, selectSauce } from "../../services/selectors/ingredientsSelectors";
+import { selectBun, selectMain, selectSauce } from "../../services/selectors/ingredients";
 import { BUN, MAIN, SAUCE } from "../../utils/consts";
 import { useAppSelector } from "../../utils/hooks";
 

@@ -3,20 +3,20 @@ import { InfoIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useEffect } from "react";
 import { useParams, useRouteMatch } from "react-router";
 import InfoMessage from "../../components/info-message/info-message";
-import { selectCategories } from "../../services/selectors/ingredientsSelectors";
+import { selectCategories } from "../../services/selectors/ingredients";
 import {
     selectOrder,
     selectOrders,
     selectSocketConnected,
     selectSocketError,
-} from "../../services/selectors/ordersSelectors";
+} from "../../services/selectors/orders";
 import { useAppDispatch, useAppSelector, useOrderData } from "../../utils/hooks";
 import OrderInfo from "../../components/order-info/order-info";
-import { selectAccessToken } from "../../services/selectors/authSelectors";
+import { selectAccessToken } from "../../services/selectors/auth";
 import {
     WS_ORDERS_CONNECTION_START,
     WS_ORDERS_CONNECTION_STOP,
-} from "../../services/actions/ordersActions";
+} from "../../services/actions/orders";
 import { WS_NO_CONNECTION, WS_RECEIVING_DATA } from "../../utils/consts";
 
 function Order() {

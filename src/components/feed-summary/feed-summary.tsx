@@ -1,9 +1,5 @@
 import { useMemo } from "react";
-import {
-    selectOrders,
-    selectTotal,
-    selectTotalToday,
-} from "../../services/selectors/ordersSelectors";
+import { selectOrders, selectTotal, selectTotalToday } from "../../services/selectors/orders";
 import { useAppSelector } from "../../utils/hooks";
 import { TOrderNumber } from "../../utils/types";
 import FeedSummaryColumn from "../feed-summary-column/feed-summary-column";

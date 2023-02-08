@@ -2,11 +2,11 @@ import styles from "./profile.module.css";
 import { useAppDispatch, useAppSelector } from "../../utils/hooks";
 import { Switch, Route, useLocation } from "react-router";
 import { NavLink } from "react-router-dom";
-import { clearAuth } from "../../services/actions/authActions";
+import { clearAuth } from "../../services/actions/auth";
 import ProfileOrders from "../../components/profile-orders/profile-orders";
 import NotFound from "../not-found/not-found";
 import ProfileForm from "../../components/profile-form/profile-form";
-import { selectRefreshToken } from "../../services/selectors/authSelectors";
+import { selectRefreshToken } from "../../services/selectors/auth";
 import { TLocationBackgState } from "../../utils/types";
 
 function Profile(): JSX.Element {

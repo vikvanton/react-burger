@@ -4,14 +4,14 @@ import styles from "./profile-form.module.css";
 import ModalOverlay from "../modal-overlay/modal-overlay";
 import Modal from "../modal/modal";
 import InfoMessage from "../info-message/info-message";
-import { patchUser, CLEAR_AUTH_ERROR } from "../../services/actions/authActions";
+import { patchUser, CLEAR_AUTH_ERROR } from "../../services/actions/auth";
 import { Input, Button, InfoIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import {
     selectName,
     selectEmail,
     selectAuthRequest,
     selectAuthError,
-} from "../../services/selectors/authSelectors";
+} from "../../services/selectors/auth";
 import { TAuth } from "../../utils/types";
 import { INPUT_FIELD_ERROR, PROFILE_PASS_FIELD_ERROR } from "../../utils/consts";
 

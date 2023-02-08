@@ -9,7 +9,7 @@ import {
     SET_TOKENS,
     PATCH_USER_SUCCESS,
     TAuthActions,
-} from "../actions/authActions";
+} from "../actions/auth";
 
 type TAuthState = {
     accessToken: string;

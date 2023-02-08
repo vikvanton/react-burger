@@ -8,7 +8,7 @@ import {
     ListIcon,
     ProfileIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import { selectRefreshToken } from "../../services/selectors/authSelectors";
+import { selectRefreshToken } from "../../services/selectors/auth";
 
 function AppHeader(): JSX.Element {
     const refreshToken = useAppSelector(selectRefreshToken);

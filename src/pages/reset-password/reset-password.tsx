@@ -10,7 +10,7 @@ import {
     resetPass,
     CLEAR_PASS_RESTORATION_ERROR,
     PASS_RESTORATION_END,
-} from "../../services/actions/passRestorationActions";
+} from "../../services/actions/pass-restoration";
 import {
     Input,
     Button,
@@ -22,7 +22,7 @@ import {
     selectRestorationComplete,
     selectPassRestorationRequest,
     selectPassRestorationError,
-} from "../../services/selectors/passRestorationSelectors";
+} from "../../services/selectors/pass-restoration";
 import { INPUT_FIELD_ERROR, PASS_FIELD_ERROR } from "../../utils/consts";
 
 function ResetPassword(): JSX.Element {

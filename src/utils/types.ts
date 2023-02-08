@@ -1,16 +1,16 @@
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
 import { store } from "../services/store/store";
-import { TConstructorActions } from "../services/actions/constructorActions";
-import { TOrderActions } from "../services/actions/orderActions";
-import { TAuthActions } from "../services/actions/authActions";
-import { TIngredientsActions } from "../services/actions/ingredientsActions";
-import { TViewInModalActions } from "../services/actions/viewInModalActions";
-import { TPassRestorationActions } from "../services/actions/passRestorationActions";
+import { TConstructorActions } from "../services/actions/constructor";
+import { TOrderActions } from "../services/actions/order";
+import { TAuthActions } from "../services/actions/auth";
+import { TIngredientsActions } from "../services/actions/ingredients";
+import { TViewInModalActions } from "../services/actions/view-in-modal";
+import { TPassRestorationActions } from "../services/actions/pass-restoration";
 import {
     TOrdersActions,
     WS_ORDERS_CONNECTION_START,
     WS_ORDERS_CONNECTION_STOP,
-} from "../services/actions/ordersActions";
+} from "../services/actions/orders";
 
 type TLocation = {
     key?: string;

@@ -1,7 +1,7 @@
 import styles from "./app.module.css";
 import { useEffect } from "react";
 import { Switch, Route, useLocation } from "react-router-dom";
-import { getIngredients } from "../../services/actions/ingredientsActions";
+import { getIngredients } from "../../services/actions/ingredients";
 import AppHeader from "../app-header/app-header";
 import MainPage from "../../pages/main-page/main-page";
 import Ingredient from "../../pages/ingredient/ingredient";
@@ -15,7 +15,7 @@ import Feed from "../../pages/feed/feed";
 import NotFound from "../../pages/not-found/not-found";
 import ModalOverlay from "../modal-overlay/modal-overlay";
 import { useCheckAuth } from "../../utils/hooks";
-import { selectIngredientsRequest } from "../../services/selectors/ingredientsSelectors";
+import { selectIngredientsRequest } from "../../services/selectors/ingredients";
 import { TLocationBackgState } from "../../utils/types";
 import { useAppDispatch, useAppSelector } from "../../utils/hooks";
 import Order from "../../pages/order/order";

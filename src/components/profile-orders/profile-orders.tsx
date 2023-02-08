@@ -7,15 +7,15 @@ import {
     selectOrders,
     selectSocketConnected,
     selectSocketError,
-} from "../../services/selectors/ordersSelectors";
+} from "../../services/selectors/orders";
 import OrderCard from "../order-card/order-card";
-import { selectCategories } from "../../services/selectors/ingredientsSelectors";
+import { selectCategories } from "../../services/selectors/ingredients";
 import { TOrderInfo } from "../../utils/types";
-import { selectAccessToken } from "../../services/selectors/authSelectors";
+import { selectAccessToken } from "../../services/selectors/auth";
 import {
     WS_ORDERS_CONNECTION_START,
     WS_ORDERS_CONNECTION_STOP,
-} from "../../services/actions/ordersActions";
+} from "../../services/actions/orders";
 import { WS_NO_CONNECTION, WS_RECEIVING_DATA } from "../../utils/consts";
 
 function ProfileOrders(): JSX.Element {

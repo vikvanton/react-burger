@@ -3,7 +3,7 @@ import { useAppSelector } from "../../utils/hooks";
 import IngredientDetails from "../../components/ingredient-details/ingredient-details";
 import InfoMessage from "../../components/info-message/info-message";
 import { InfoIcon } from "@ya.praktikum/react-developer-burger-ui-components";
-import { selectIngredient } from "../../services/selectors/ingredientsSelectors";
+import { selectIngredient } from "../../services/selectors/ingredients";
 
 function Ingredient(): JSX.Element {
     const { id } = useParams<{ id: string }>();

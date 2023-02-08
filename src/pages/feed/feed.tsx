@@ -7,13 +7,13 @@ import {
     selectOrders,
     selectSocketConnected,
     selectSocketError,
-} from "../../services/selectors/ordersSelectors";
+} from "../../services/selectors/orders";
 import FeedSummary from "../../components/feed-summary/feed-summary";
 import FeedOrders from "../../components/feed-orders/feed-orders";
 import {
     WS_ORDERS_CONNECTION_START,
     WS_ORDERS_CONNECTION_STOP,
-} from "../../services/actions/ordersActions";
+} from "../../services/actions/orders";
 import { WS_NO_CONNECTION, WS_RECEIVING_DATA } from "../../utils/consts";
 
 function Feed(): JSX.Element {

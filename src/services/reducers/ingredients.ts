@@ -7,7 +7,7 @@ import {
     DEC_INGREDIENT_COUNTER,
     CLEAR_INGREDIENTS_COUNTERS,
     TIngredientsActions,
-} from "../actions/ingredientsActions";
+} from "../actions/ingredients";
 import { BUN, MAIN, SAUCE } from "../../utils/consts";
 
 type TIngredientsState = {

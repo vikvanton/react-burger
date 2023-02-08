@@ -6,7 +6,7 @@ import {
     PASS_RESTORATION_ERROR,
     CLEAR_PASS_RESTORATION_ERROR,
     TPassRestorationActions,
-} from "../actions/passRestorationActions";
+} from "../actions/pass-restoration";
 
 type TPassRestorationState = {
     restorationProcess: boolean;

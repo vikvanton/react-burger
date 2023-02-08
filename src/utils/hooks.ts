@@ -11,8 +11,8 @@ import {
 } from "react";
 import { TypedUseSelectorHook, useSelector, useDispatch } from "react-redux";
 import { getUserDataRequest, refreshTokensRequest } from "./api";
-import { SET_TOKENS, SET_USER_DATA, CLEAR_AUTH_SUCCESS } from "../services/actions/authActions";
-import { selectRefreshToken } from "../services/selectors/authSelectors";
+import { SET_TOKENS, SET_USER_DATA, CLEAR_AUTH_SUCCESS } from "../services/actions/auth";
+import { selectRefreshToken } from "../services/selectors/auth";
 import {
     TAppActions,
     TAppDispatch,

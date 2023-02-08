@@ -1,5 +1,5 @@
-import { selectCategories } from "../../services/selectors/ingredientsSelectors";
-import { selectOrders } from "../../services/selectors/ordersSelectors";
+import { selectCategories } from "../../services/selectors/ingredients";
+import { selectOrders } from "../../services/selectors/orders";
 import { useAppSelector, useOpenModalFunc } from "../../utils/hooks";
 import OrderCard from "../order-card/order-card";
 import styles from "./feed-orders.module.css";

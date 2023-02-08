@@ -1,6 +1,6 @@
 import { CurrencyIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import { memo } from "react";
-import { SET_VIEW_ORDER } from "../../services/actions/viewInModalActions";
+import { SET_VIEW_ORDER } from "../../services/actions/view-in-modal";
 import { useOrderData } from "../../utils/hooks";
 import { OrderStatus, TCategories, TOpenModalFunc, TOrderInfo } from "../../utils/types";
 import styles from "./order-card.module.css";

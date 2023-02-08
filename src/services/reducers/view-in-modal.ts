@@ -1,9 +1,5 @@
 import { TIngredient, TOrderDeatiledInfo } from "../../utils/types";
-import {
-    SET_VIEW_INGREDIENT,
-    SET_VIEW_ORDER,
-    TViewInModalActions,
-} from "../actions/viewInModalActions";
+import { SET_VIEW_INGREDIENT, SET_VIEW_ORDER, TViewInModalActions } from "../actions/view-in-modal";
 
 type TViewInModalState = {
     ingredientInModal: TIngredient | null;

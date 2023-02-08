@@ -3,7 +3,7 @@ import styles from "./burger-ingredients-item.module.css";
 import { CurrencyIcon, Counter } from "@ya.praktikum/react-developer-burger-ui-components";
 import { DragPreviewImage, useDrag } from "react-dnd";
 import { TIngredient, TOpenModalFunc } from "../../utils/types";
-import { SET_VIEW_INGREDIENT } from "../../services/actions/viewInModalActions";
+import { SET_VIEW_INGREDIENT } from "../../services/actions/view-in-modal";
 
 interface IBurgerIngredientsItemProps {
     ingredient: TIngredient;

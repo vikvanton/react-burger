@@ -7,6 +7,7 @@ import {
     selectOrders,
     selectSocketConnected,
     selectSocketError,
+    selectTotal,
 } from "../../services/selectors/orders";
 import OrderCard from "../order-card/order-card";
 import { selectCategories } from "../../services/selectors/ingredients";
@@ -16,12 +17,13 @@ import {
     WS_ORDERS_CONNECTION_START,
     WS_ORDERS_CONNECTION_STOP,
 } from "../../services/actions/orders";
-import { WS_NO_CONNECTION, WS_RECEIVING_DATA } from "../../utils/consts";
+import { NO_ORDERS, WS_NO_CONNECTION, WS_RECEIVING_DATA } from "../../utils/consts";
 
 function ProfileOrders(): JSX.Element {
     const dispatch = useAppDispatch();
     const accessToken = useAppSelector(selectAccessToken);
     const orders = useAppSelector(selectOrders);
+    const total = useAppSelector(selectTotal);
     const categories = useAppSelector(selectCategories);
     const socketConnected = useAppSelector(selectSocketConnected);
     const socketError = useAppSelector(selectSocketError);
@@ -63,6 +65,10 @@ function ProfileOrders(): JSX.Element {
                             ))}
                         </ul>
                     </section>
+                ) : total ? (
+                    <InfoMessage text={NO_ORDERS}>
+                        <InfoIcon type="secondary" />
+                    </InfoMessage>
                 ) : (
                     <InfoMessage text={WS_RECEIVING_DATA}>
                         <InfoIcon type="primary" />

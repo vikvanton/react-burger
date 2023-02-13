@@ -14,3 +14,4 @@ export const PROFILE_PASS_FIELD_ERROR: string =
     "Пароль должен содержать от 6 до 15 символов. Введите новый пароль для обновления или старый для подтверждения";
 export const WS_RECEIVING_DATA: string = "Получаем данные с сервера...";
 export const WS_NO_CONNECTION: string = "Отсутствует соединение с сервером";
+export const NO_ORDERS: string = "Отсутствуют заказы";

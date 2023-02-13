@@ -117,10 +117,10 @@ export type TIngredientCounter = {
     count?: number;
 };
 
-export type IRawIngredients = Array<Omit<TIngredient, "count">>;
+export type TRawIngredients = Array<Omit<TIngredient, "count">>;
 
 export interface IIngredientsResponse extends IResponse {
-    data: IRawIngredients;
+    data: TRawIngredients;
 }
 
 export interface IOrderResponse extends IResponse {

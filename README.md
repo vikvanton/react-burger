@@ -1,3 +1,24 @@
+# О проекте
+
+Учебный проект SPA-приложения для космической бургерной "Stellar Burgers". Создан на основе курса "React-разработчик" от Яндекс.Практикума.
+
+# Стек
+
+React, Typescript, React DnD, Redux, React Router, WebSockets, Jest, Cypress
+
+# Запуск
+
+Для запуска проекта необходимо установить Node.js: https://nodejs.org/
+
+-   Клонируйте репозиторий: git clone https://github.com/vikvanton/react-burger.git или загрузите zip-файл
+-   Установите зависимости: npm i
+-   Запустите проект: npm start
+-   В браузере введите в адресной строке http://localhost:3000/
+
+# Ссылка
+
+https://vikvanton.github.io/react-burger/
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

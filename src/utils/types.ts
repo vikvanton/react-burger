@@ -215,13 +215,13 @@ interface IWsConnectionStop {
 export type TWsActions = {
     // Универсальный тип экшена для открытия сокет-соединения
     wsInit: { type: TWsStartActionsType };
-    // Универсальный тип экшена для отправки сообщения по сокет-соединению
-    wsSend: { type: TWsSendActionsType };
     // Универсальный тип экшена для окончания сеанса сокет-соединения
     // Может передавать экшн-креатор, который вызывается или при
     // непосредственно закрытии сокета, или при событии onClose, если сокет
     // закрывается, например, сервером
     wsEnd: { type: TWsStopActionsType; callback?: () => TAppActions | TAppThunk };
+    // Универсальный тип экшена для отправки сообщения по сокет-соединению
+    wsSend?: { type: TWsSendActionsType };
     // Экшен-креаторы для событий сокета
     wsOpen?: () => TAppActions | TAppThunk;
     wsError?: (error: string) => TAppActions | TAppThunk;

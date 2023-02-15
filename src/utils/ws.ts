@@ -8,7 +8,7 @@ import {
     WS_ORDERS_CONNECTION_STOP,
 } from "../services/actions/orders";
 import { refreshTokensRequest } from "./api";
-import { SOCKET_TOKEN_ERROR, WS_SEND_MESSAGE } from "./consts";
+import { SOCKET_TOKEN_ERROR } from "./consts";
 import {
     TAppActions,
     TAppThunk,
@@ -34,7 +34,6 @@ export function WsOrdersActions(): TWsActions {
 
     return {
         wsInit: { type: WS_ORDERS_CONNECTION_START },
-        wsSend: { type: WS_SEND_MESSAGE },
         wsEnd: {
             type: WS_ORDERS_CONNECTION_STOP,
             callback: (): TAppActions => ({ type: ORDERS_CONNECTION_CLOSED }),

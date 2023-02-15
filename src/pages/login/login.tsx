@@ -95,7 +95,7 @@ function Login(): JSX.Element {
                         Зарегистрироваться
                     </Link>
                 </div>
-                <div className="text_type_main-small">
+                <div className="text_type_main-small pb-4">
                     <span className="text_color_inactive">Забыли пароль? </span>
                     <Link to="/forgot-password" className={styles.link}>
                         Восстановить пароль

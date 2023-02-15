@@ -35,9 +35,9 @@ function App(): JSX.Element {
     }, [checkAuth, dispatch]);
 
     return (
-        <>
+        <div className={`${styles.container}`}>
             <AppHeader />
-            <main className={styles.main}>
+            <main className={`${styles.main} custom-scroll`}>
                 {!ingredientsRequest && !checking && (
                     <Switch location={background || location}>
                         <Route path="/" exact>
@@ -78,7 +78,7 @@ function App(): JSX.Element {
             </main>
             <ModalManager />
             {checking && <ModalOverlay />}
-        </>
+        </div>
     );
 }
 

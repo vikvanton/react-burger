@@ -9,12 +9,14 @@ interface IOrderInfo {
 function OrderInfo({ order }: IOrderInfo): JSX.Element {
     return (
         <article className={styles.article}>
-            <h3 className="text text_type_main-medium mb-3">{order.name}</h3>
+            <h3 className={`${styles.header} text text_type_main-medium mb-3 custom-scroll`}>
+                {order.name}
+            </h3>
             <p
                 className={
                     order.status === "done"
-                        ? `${styles.done} text text_type_main-default mb-15`
-                        : "text text_type_main-default mb-15"
+                        ? `${styles.done} text text_type_main-default mb-10`
+                        : "text text_type_main-default mb-10"
                 }
             >
                 {OrderStatus[order.status as keyof typeof OrderStatus]}

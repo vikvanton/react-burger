@@ -79,7 +79,7 @@ function Register(): JSX.Element {
                         Зарегистрироваться
                     </Button>
                 </form>
-                <div className="text_type_main-small">
+                <div className="text_type_main-small pb-4">
                     <span className="text_color_inactive">Уже зарегистрированы? </span>
                     <Link to="/login" className={styles.link}>
                         Войти

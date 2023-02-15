@@ -7,7 +7,7 @@ interface IIngredientDetailsProps {
 
 function IngredientDetails({ ingredient }: IIngredientDetailsProps): JSX.Element {
     return (
-        <article className={`${styles.details} ml-25 mr-25 mb-15`}>
+        <article className={`${styles.details} ml-25 mr-25 pb-15`}>
             <img src={ingredient.image_large} alt="Ingredient" className="mb-4" />
             <span className={`${styles.name} text text_type_main-medium mb-8`}>
                 {ingredient.name}

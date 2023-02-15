@@ -9,6 +9,6 @@
     padding-left: 0;
     overflow-y: auto;
     overflow-x: hidden;
-    max-height: calc(100vh - 220px);
+    max-height: calc(100vh - 196px);
     padding-right: 8px;
 }

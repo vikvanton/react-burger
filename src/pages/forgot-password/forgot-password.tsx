@@ -63,7 +63,7 @@ function ForgotPassword(): JSX.Element {
                         Восстановить
                     </Button>
                 </form>
-                <div className="text_type_main-small">
+                <div className="text_type_main-small pb-4">
                     <span className="text_color_inactive">Вспомнили пароль? </span>
                     <Link to="/login" className={styles.link}>
                         Войти

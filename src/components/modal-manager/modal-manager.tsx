@@ -2,7 +2,7 @@ import { useHistory, Redirect } from "react-router-dom";
 import {
     selectIngredientInModal,
     selectOrderInModal,
-} from "../../services/selectors/viewInModalSelectors";
+} from "../../services/selectors/view-in-modal";
 import Modal from "../modal/modal";
 import OrderInfo from "../order-info/order-info";
 import IngredientDetails from "../ingredient-details/ingredient-details";

@@ -7,7 +7,7 @@ import {
     DEC_INGREDIENT_COUNTER,
     CLEAR_INGREDIENTS_COUNTERS,
     TIngredientsActions,
-} from "../actions/ingredientsActions";
+} from "../actions/ingredients";
 import { BUN, MAIN, SAUCE } from "../../utils/consts";
 
 type TIngredientsState = {
@@ -60,7 +60,6 @@ export const ingredientsReducer = (
                     case SAUCE:
                         sauce.push(newElem);
                         break;
-                    default:
                 }
             });
             return {
@@ -181,7 +180,7 @@ const clearIngredientsCounters = (categories: TCategories): TCategories => {
         let isChanged: boolean = false;
         newCategories[category] = categories[category].map((item) => {
             if (item.count) {
-                if (!isChanged) isChanged = true;
+                isChanged = true;
                 return {
                     ...item,
                     count: 0,

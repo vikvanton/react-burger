@@ -1,5 +1,5 @@
 import { getIngredientsRequest } from "../../utils/api";
-import { IRawIngredients, IResponseError, TAppThunk, TIngredientCounter } from "../../utils/types";
+import { TRawIngredients, IResponseError, TAppThunk, TIngredientCounter } from "../../utils/types";
 
 export const GET_INGREDIENTS_REQUEST: "GET_INGREDIENTS_REQUEST" = "GET_INGREDIENTS_REQUEST";
 export const GET_INGREDIENTS_SUCCESS: "GET_INGREDIENTS_SUCCESS" = "GET_INGREDIENTS_SUCCESS";
@@ -15,7 +15,7 @@ export interface IGetIngredientsRequest {
 
 export interface IGetIngredientsSuccess {
     readonly type: typeof GET_INGREDIENTS_SUCCESS;
-    readonly data: IRawIngredients;
+    readonly data: TRawIngredients;
 }
 
 export interface IGetIngredientsError {

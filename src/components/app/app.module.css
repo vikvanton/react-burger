@@ -1,5 +1,10 @@
+.container {
+    min-width: 1280px;
+}
+
 .main {
     display: flex;
     justify-content: center;
     height: calc(100vh - 88px);
+    overflow-x: hidden;
 }

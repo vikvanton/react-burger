@@ -1,4 +1,4 @@
-import { SET_TOKENS, CLEAR_AUTH_SUCCESS } from "../services/actions/authActions";
+import { SET_TOKENS, CLEAR_AUTH_SUCCESS } from "../services/actions/auth";
 import {
     ORDERS_CONNECTION_SUCCESS,
     ORDERS_ERROR,
@@ -6,9 +6,9 @@ import {
     ORDERS_CONNECTION_CLOSED,
     WS_ORDERS_CONNECTION_START,
     WS_ORDERS_CONNECTION_STOP,
-} from "../services/actions/ordersActions";
+} from "../services/actions/orders";
 import { refreshTokensRequest } from "./api";
-import { SOCKET_TOKEN_ERROR } from "./consts";
+import { SOCKET_TOKEN_ERROR, WS_SEND_MESSAGE } from "./consts";
 import {
     TAppActions,
     TAppThunk,
@@ -33,7 +33,12 @@ export function WsOrdersActions(): TWsActions {
     };
 
     return {
-        wsInit: WS_ORDERS_CONNECTION_START,
+        wsInit: { type: WS_ORDERS_CONNECTION_START },
+        wsSend: { type: WS_SEND_MESSAGE },
+        wsEnd: {
+            type: WS_ORDERS_CONNECTION_STOP,
+            callback: (): TAppActions => ({ type: ORDERS_CONNECTION_CLOSED }),
+        },
         wsOpen: (): TAppActions => ({ type: ORDERS_CONNECTION_SUCCESS }),
         wsError: (error: string): TAppActions => ({ type: ORDERS_ERROR, data: error }),
         // thunk экшн для получения и обработки сокет-сообщения
@@ -86,7 +91,5 @@ export function WsOrdersActions(): TWsActions {
                 }
             };
         },
-        wsClose: (): TAppActions => ({ type: ORDERS_CONNECTION_CLOSED }),
-        wsEnd: WS_ORDERS_CONNECTION_STOP,
     };
 }

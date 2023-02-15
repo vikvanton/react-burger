@@ -1,13 +1,13 @@
 import { FormEvent } from "react";
 import { useAppDispatch, useAppSelector, useForm, useShowPass } from "../../utils/hooks";
-import { setAuth, CLEAR_AUTH_ERROR } from "../../services/actions/authActions";
+import { setAuth, CLEAR_AUTH_ERROR } from "../../services/actions/auth";
 import styles from "./register.module.css";
 import { Link } from "react-router-dom";
 import ModalOverlay from "../../components/modal-overlay/modal-overlay";
 import Modal from "../../components/modal/modal";
 import InfoMessage from "../../components/info-message/info-message";
 import { Input, Button, InfoIcon } from "@ya.praktikum/react-developer-burger-ui-components";
-import { selectAuthRequest, selectAuthError } from "../../services/selectors/authSelectors";
+import { selectAuthRequest, selectAuthError } from "../../services/selectors/auth";
 import { INPUT_FIELD_ERROR, PASS_FIELD_ERROR, REGISTER } from "../../utils/consts";
 import { TAuth } from "../../utils/types";
 
@@ -79,7 +79,7 @@ function Register(): JSX.Element {
                         Зарегистрироваться
                     </Button>
                 </form>
-                <div className="text_type_main-small">
+                <div className="text_type_main-small pb-4">
                     <span className="text_color_inactive">Уже зарегистрированы? </span>
                     <Link to="/login" className={styles.link}>
                         Войти

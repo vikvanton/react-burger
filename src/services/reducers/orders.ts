@@ -5,7 +5,7 @@ import {
     ORDERS_CONNECTION_CLOSED,
     ORDERS_GET_MESSAGE,
     TOrdersActions,
-} from "../actions/ordersActions";
+} from "../actions/orders";
 
 type TOrdersState = {
     orders: Array<TOrderInfo>;

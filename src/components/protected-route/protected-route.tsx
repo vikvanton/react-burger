@@ -1,6 +1,6 @@
 import { Redirect, Route } from "react-router-dom";
 import { useAppSelector } from "../../utils/hooks";
-import { selectAccessToken } from "../../services/selectors/authSelectors";
+import { selectAccessToken } from "../../services/selectors/auth";
 import { ReactElement } from "react";
 
 interface IProtectedRouteProps {

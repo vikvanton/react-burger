@@ -1,7 +1,7 @@
 import { useEffect, FormEvent } from "react";
 import { useAppDispatch, useAppSelector, useForm, useShowPass } from "../../utils/hooks";
-import { setAuth, CLEAR_AUTH_ERROR } from "../../services/actions/authActions";
-import { PASS_RESTORATION_END } from "../../services/actions/passRestorationActions";
+import { setAuth, CLEAR_AUTH_ERROR } from "../../services/actions/auth";
+import { PASS_RESTORATION_END } from "../../services/actions/pass-restoration";
 import styles from "./login.module.css";
 import { Link, Redirect, useLocation } from "react-router-dom";
 import ModalOverlay from "../../components/modal-overlay/modal-overlay";
@@ -12,8 +12,8 @@ import {
     selectAccessToken,
     selectAuthRequest,
     selectAuthError,
-} from "../../services/selectors/authSelectors";
-import { selectRestorationProcess } from "../../services/selectors/passRestorationSelectors";
+} from "../../services/selectors/auth";
+import { selectRestorationProcess } from "../../services/selectors/pass-restoration";
 import { TAuth, TLocationPrevState } from "../../utils/types";
 import { INPUT_FIELD_ERROR, LOGIN, PASS_FIELD_ERROR } from "../../utils/consts";
 
@@ -95,7 +95,7 @@ function Login(): JSX.Element {
                         Зарегистрироваться
                     </Link>
                 </div>
-                <div className="text_type_main-small">
+                <div className="text_type_main-small pb-4">
                     <span className="text_color_inactive">Забыли пароль? </span>
                     <Link to="/forgot-password" className={styles.link}>
                         Восстановить пароль

@@ -1,16 +1,17 @@
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
 import { store } from "../services/store/store";
-import { TConstructorActions } from "../services/actions/constructorActions";
-import { TOrderActions } from "../services/actions/orderActions";
-import { TAuthActions } from "../services/actions/authActions";
-import { TIngredientsActions } from "../services/actions/ingredientsActions";
-import { TViewInModalActions } from "../services/actions/viewInModalActions";
-import { TPassRestorationActions } from "../services/actions/passRestorationActions";
+import { TConstructorActions } from "../services/actions/constructor";
+import { TOrderActions } from "../services/actions/order";
+import { TAuthActions } from "../services/actions/auth";
+import { TIngredientsActions } from "../services/actions/ingredients";
+import { TViewInModalActions } from "../services/actions/view-in-modal";
+import { TPassRestorationActions } from "../services/actions/pass-restoration";
 import {
     TOrdersActions,
     WS_ORDERS_CONNECTION_START,
     WS_ORDERS_CONNECTION_STOP,
-} from "../services/actions/ordersActions";
+} from "../services/actions/orders";
+import { WS_CONNECTION_START, WS_CONNECTION_STOP, WS_SEND_MESSAGE } from "./consts";
 
 type TLocation = {
     key?: string;
@@ -117,10 +118,10 @@ export type TIngredientCounter = {
     count?: number;
 };
 
-export type IRawIngredients = Array<Omit<TIngredient, "count">>;
+export type TRawIngredients = Array<Omit<TIngredient, "count">>;
 
 export interface IIngredientsResponse extends IResponse {
-    data: IRawIngredients;
+    data: TRawIngredients;
 }
 
 export interface IOrderResponse extends IResponse {
@@ -182,17 +183,27 @@ export type TOpenModalFunc = (action: TAppActions, pathname: string) => void;
 
 // Универсальный type экшена для открытия сокет-соединения
 // Новые типы могут добавлятся через union
-type TWsStartActionsType = typeof WS_ORDERS_CONNECTION_START;
+type TWsStartActionsType = typeof WS_CONNECTION_START | typeof WS_ORDERS_CONNECTION_START;
 
 // Универсальный type экшена для окончания сеанса сокет-соединения
 // Новые типы могут добавлятся через union
-type TWsStopActionsType = typeof WS_ORDERS_CONNECTION_STOP;
+type TWsStopActionsType = typeof WS_CONNECTION_STOP | typeof WS_ORDERS_CONNECTION_STOP;
+
+// Универсальный type экшена для отправки сообщения по сокет-соединению
+// Новые типы могут добавлятся через union
+type TWsSendActionsType = typeof WS_SEND_MESSAGE;
 
 // Тип для сокет-экшена открытия соединения
 interface IWsConnectionStart {
     readonly type: TWsStartActionsType;
     // эндпоинт для открываемого сокета
     readonly endpoint: string;
+}
+
+// Тип для сокет-экшена отправки сообщения
+interface IWsConnectionSend {
+    readonly type: TWsSendActionsType;
+    readonly message: string;
 }
 
 // Тип для сокет-экшена окончания сеанса
@@ -203,14 +214,19 @@ interface IWsConnectionStop {
 // Тип для объекта экшенов, передаваемого в сокет-мидлвар
 export type TWsActions = {
     // Универсальный тип экшена для открытия сокет-соединения
-    wsInit: TWsStartActionsType;
-    // Экшен-креаторы для событий сокета
-    wsOpen: () => TAppActions | TAppThunk;
-    wsError: (error: string) => TAppActions | TAppThunk;
-    wsMessage: (data: string) => TAppActions | TAppThunk;
-    wsClose: () => TAppActions | TAppThunk;
+    wsInit: { type: TWsStartActionsType };
+    // Универсальный тип экшена для отправки сообщения по сокет-соединению
+    wsSend: { type: TWsSendActionsType };
     // Универсальный тип экшена для окончания сеанса сокет-соединения
-    wsEnd: TWsStopActionsType;
+    // Может передавать экшн-креатор, который вызывается или при
+    // непосредственно закрытии сокета, или при событии onClose, если сокет
+    // закрывается, например, сервером
+    wsEnd: { type: TWsStopActionsType; callback?: () => TAppActions | TAppThunk };
+    // Экшен-креаторы для событий сокета
+    wsOpen?: () => TAppActions | TAppThunk;
+    wsError?: (error: string) => TAppActions | TAppThunk;
+    wsMessage?: (data: string) => TAppActions | TAppThunk;
+    wsClose?: () => TAppActions | TAppThunk;
 };
 
 export type TAppActions =
@@ -222,7 +238,8 @@ export type TAppActions =
     | TOrdersActions
     | TViewInModalActions
     | IWsConnectionStart
-    | IWsConnectionStop;
+    | IWsConnectionStop
+    | IWsConnectionSend;
 
 export type TAppState = ReturnType<typeof store.getState>;
 

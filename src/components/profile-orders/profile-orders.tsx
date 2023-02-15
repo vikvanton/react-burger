@@ -7,21 +7,23 @@ import {
     selectOrders,
     selectSocketConnected,
     selectSocketError,
-} from "../../services/selectors/ordersSelectors";
+    selectTotal,
+} from "../../services/selectors/orders";
 import OrderCard from "../order-card/order-card";
-import { selectCategories } from "../../services/selectors/ingredientsSelectors";
+import { selectCategories } from "../../services/selectors/ingredients";
 import { TOrderInfo } from "../../utils/types";
-import { selectAccessToken } from "../../services/selectors/authSelectors";
+import { selectAccessToken } from "../../services/selectors/auth";
 import {
     WS_ORDERS_CONNECTION_START,
     WS_ORDERS_CONNECTION_STOP,
-} from "../../services/actions/ordersActions";
-import { WS_NO_CONNECTION, WS_RECEIVING_DATA } from "../../utils/consts";
+} from "../../services/actions/orders";
+import { NO_ORDERS, WS_NO_CONNECTION, WS_RECEIVING_DATA } from "../../utils/consts";
 
 function ProfileOrders(): JSX.Element {
     const dispatch = useAppDispatch();
     const accessToken = useAppSelector(selectAccessToken);
     const orders = useAppSelector(selectOrders);
+    const total = useAppSelector(selectTotal);
     const categories = useAppSelector(selectCategories);
     const socketConnected = useAppSelector(selectSocketConnected);
     const socketError = useAppSelector(selectSocketError);
@@ -63,6 +65,10 @@ function ProfileOrders(): JSX.Element {
                             ))}
                         </ul>
                     </section>
+                ) : total ? (
+                    <InfoMessage text={NO_ORDERS}>
+                        <InfoIcon type="secondary" />
+                    </InfoMessage>
                 ) : (
                     <InfoMessage text={WS_RECEIVING_DATA}>
                         <InfoIcon type="primary" />

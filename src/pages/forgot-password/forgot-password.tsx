@@ -5,16 +5,13 @@ import { Link, Redirect } from "react-router-dom";
 import ModalOverlay from "../../components/modal-overlay/modal-overlay";
 import Modal from "../../components/modal/modal";
 import InfoMessage from "../../components/info-message/info-message";
-import {
-    restorePass,
-    CLEAR_PASS_RESTORATION_ERROR,
-} from "../../services/actions/passRestorationActions";
+import { restorePass, CLEAR_PASS_RESTORATION_ERROR } from "../../services/actions/pass-restoration";
 import { Input, Button, InfoIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import {
     selectRestorationProcess,
     selectPassRestorationRequest,
     selectPassRestorationError,
-} from "../../services/selectors/passRestorationSelectors";
+} from "../../services/selectors/pass-restoration";
 import { TEmail } from "../../utils/types";
 import { INPUT_FIELD_ERROR } from "../../utils/consts";
 
@@ -66,7 +63,7 @@ function ForgotPassword(): JSX.Element {
                         Восстановить
                     </Button>
                 </form>
-                <div className="text_type_main-small">
+                <div className="text_type_main-small pb-4">
                     <span className="text_color_inactive">Вспомнили пароль? </span>
                     <Link to="/login" className={styles.link}>
                         Войти

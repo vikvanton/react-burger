@@ -6,7 +6,7 @@ import {
     CLEAR_ORDER_ERROR,
     CLEAR_ORDER_NUMBER,
     TOrderActions,
-} from "../actions/orderActions";
+} from "../actions/order";
 
 type TOrderState = {
     orderNumber: number;

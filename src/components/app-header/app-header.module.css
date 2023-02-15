@@ -24,14 +24,17 @@
     color: var(--text-inactive-color);
 }
 
-.link, .link > svg {
+.link,
+.link > svg {
     transition: all 0.5s ease;
 }
 
-.linkSelected, .link:hover {
+.linkSelected,
+.link:hover {
     color: var(--text-primary-color);
 }
 
-.linkSelected > svg, .link:hover > svg {
+.linkSelected > svg,
+.link:hover > svg {
     fill: var(--text-primary-color);
 }

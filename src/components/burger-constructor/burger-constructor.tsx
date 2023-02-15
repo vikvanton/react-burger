@@ -10,32 +10,32 @@ import {
     INC_INGREDIENT_COUNTER,
     DEC_INGREDIENT_COUNTER,
     CLEAR_INGREDIENTS_COUNTERS,
-} from "../../services/actions/ingredientsActions";
+} from "../../services/actions/ingredients";
 import {
     addToConstructor,
     REMOVE_FROM_CONSTRUCTOR,
     CLEAR_CONSTRUCTOR,
     EXCHANGE_INGREDIENTS,
-} from "../../services/actions/constructorActions";
+} from "../../services/actions/constructor";
 import {
     postOrder,
     SET_ORDER_ERROR,
     CLEAR_ORDER_ERROR,
     CLEAR_ORDER_NUMBER,
-} from "../../services/actions/orderActions";
+} from "../../services/actions/order";
 import { CurrencyIcon, Button, InfoIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useDrop } from "react-dnd";
 import {
     selectConstructorBun,
     selectConstructorList,
     selectTotalSum,
-} from "../../services/selectors/constructorSelectors";
+} from "../../services/selectors/constructor";
 import {
     selectOrderNumber,
     selectOrderRequest,
     selectOrderError,
-} from "../../services/selectors/orderSelectors";
-import { selectAccessToken } from "../../services/selectors/authSelectors";
+} from "../../services/selectors/order";
+import { selectAccessToken } from "../../services/selectors/auth";
 import { TIngredient, TConstructorIngredient, TOrder } from "../../utils/types";
 import { useAppSelector, useAppDispatch } from "../../utils/hooks";
 

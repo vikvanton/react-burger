@@ -5,7 +5,7 @@ import {
     CLEAR_CONSTRUCTOR,
     EXCHANGE_INGREDIENTS,
     TConstructorActions,
-} from "../actions/constructorActions";
+} from "../actions/constructor";
 
 type TConstructorState = {
     bun: TConstructorIngredient | null;
